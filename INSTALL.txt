@@ -1,0 +1,64 @@
+/* $Id
+*******************************************************************************************
+Warning
+-------
+In order to work, disclaimer need client has JAVASCRIPT ENABLED and ACCEPT COOKIE.
+
+IMPORTANT NOTE FOR THOSE USING PATH.MODULE (URL ALIAS):
+
+Please ensure you have no other pages setup with the URL ALIAS 'disclaimer' when 
+installing the disclaimer.module which uses the 'disclaimer' URL Alias by default.
+
+*******************************************************************************************
+
+Requirements
+------------
+
+This module require at least version 5.x of Drupal.
+This module require jquery update v2.x module (http://drupal.org/project/jquery_update).
+This module require NyroModal jquery plugin 1.4.2+ from
+http://plugins.jquery.com/project/nyroModal
+
+Installation
+------------
+
+1. Copy the folder named 'disclaimer' and its contents to the modules directory
+   of your Drupal installation (for example 'sites/all/modules/').
+
+2. Download NyroModal archive (version 1.4.2+) at 
+   http://plugins.jquery.com/project/nyroModal
+
+3. Create nyroModal folder in disclaimer module
+   sites/all/modules/disclaimer/nyroModal
+
+4. Extract all NyroModal archive content in this folder.
+   so directory look likes:
+    disclaimer/nyroModal/js/
+    disclaimer/nyroModal/img/
+    disclaimer/nyroModal/styles/
+    
+    no need of php files given in NyroModal package.
+
+5. Rename one of the NyroModal script (packed recommended) on "disclaimer/nyromodal/js/" 
+   to "jquery.nyroModal.js"
+
+6. Module will use nyroModal.css, rename -full version if you need. Edit to your need.
+
+7. In order to get disclaimer with customizes regions (no sidebar, etc...), copy 
+   page-disclaimer.tpl.php file from disclaimer module to your theme directory.
+   Edit to your need.
+
+8. Go to 'admin/build/modules' and enable disclaimer.
+
+9. Go to 'admin/settings/disclaimer' and edit option and content for the disclaimer
+   to your need.
+
+*******************************************************************************************
+
+This module has been developed by Mog for arthur-com.net
+
+Email me or post a message on the drupal.org site if you have any ideas on 
+how we can improve the module. 
+
+Mog.
+tech@arthura.fr

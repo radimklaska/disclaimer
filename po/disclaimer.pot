@@ -1,0 +1,326 @@
+# $Id$
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright 2009 Mog <tech@arthura.fr>
+# Generated from files:
+#  disclaimer.module: n/a
+#  disclaimer.info: n/a
+#  disclaimer.install: n/a
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2009-05-14 23:47+0200\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: disclaimer.module:26;34 disclaimer.info:0
+msgid "Disclaimer"
+msgstr ""
+
+#: disclaimer.module:35
+msgid "Administer Disclaimer settings."
+msgstr ""
+
+#: disclaimer.module:55
+msgid "Can't load jquery.nyroModal.js for disclaimer module. Please follow !url."
+msgstr ""
+
+#: disclaimer.module:83
+msgid "Disclaimer preview"
+msgstr ""
+
+#: disclaimer.module:91
+msgid "Disclaimer content"
+msgstr ""
+
+#: disclaimer.module:94
+msgid "This is the body of the disclaimer, you can use HTML and choose input filter properly."
+msgstr ""
+
+#: disclaimer.module:100
+msgid "Disclaimer footer"
+msgstr ""
+
+#: disclaimer.module:102
+msgid "Optional: this is the footer of the disclaimer, under ENTER/EXIT. you can use HTML and choose input filter properly."
+msgstr ""
+
+#: disclaimer.module:109
+msgid "Disclaimer action"
+msgstr ""
+
+#: disclaimer.module:113
+msgid "Disclaimer enter url"
+msgstr ""
+
+#: disclaimer.module:115
+msgid "Set the url when press Enter on disclaimer. Empty is your front page. Use Drupal system path."
+msgstr ""
+
+#: disclaimer.module:119
+msgid "Disclaimer exit url"
+msgstr ""
+
+#: disclaimer.module:121
+msgid "Set the url when press Exit on disclaimer. Default is \"http://www.google.com\"."
+msgstr ""
+
+#: disclaimer.module:125
+msgid "Disclaimer action style"
+msgstr ""
+
+#: disclaimer.module:128
+msgid "Use text"
+msgstr ""
+
+#: disclaimer.module:129
+msgid "Use images"
+msgstr ""
+
+#: disclaimer.module:131
+msgid "Select what do you want to use for \"ENTER\" or \"EXIT\" action on the disclaimer."
+msgstr ""
+
+#: disclaimer.module:137
+msgid "Text settings"
+msgstr ""
+
+#: disclaimer.module:141
+msgid "Disclaimer enter text"
+msgstr ""
+
+#: disclaimer.module:143;354;355;360
+msgid "ENTER"
+msgstr ""
+
+#: disclaimer.module:144
+msgid "Set the text for Enter action on disclaimer. Default is \"ENTER\""
+msgstr ""
+
+#: disclaimer.module:148
+msgid "Disclaimer exit text"
+msgstr ""
+
+#: disclaimer.module:150;361
+msgid "EXIT"
+msgstr ""
+
+#: disclaimer.module:151
+msgid "Set the text for Exit action on disclaimer. Default is \"EXIT\""
+msgstr ""
+
+#: disclaimer.module:157
+msgid "Image settings"
+msgstr ""
+
+#: disclaimer.module:161
+msgid "Disclaimer enter image name"
+msgstr ""
+
+#: disclaimer.module:164
+msgid "Set the image name to be used for Enter action on disclaimer. Path is relative to /files/, so the image need to be in your /files directory. Default is \"enter.png\""
+msgstr ""
+
+#: disclaimer.module:168
+msgid "Disclaimer enter image alt/title text"
+msgstr ""
+
+#: disclaimer.module:171
+msgid "Set the image alt/title text to be used for Enter action on disclaimer. Default is \"Enter\"."
+msgstr ""
+
+#: disclaimer.module:176
+msgid "Disclaimer exit image name"
+msgstr ""
+
+#: disclaimer.module:179
+msgid "Set the image name to be used for Exit action on disclaimer. Path is relative to /files/, so the image need to be in your /files directory. Default is \"exit.png\""
+msgstr ""
+
+#: disclaimer.module:183
+msgid "Disclaimer exit image alt/title text"
+msgstr ""
+
+#: disclaimer.module:186
+msgid "Set the image alt/title text to be used for Exit action on disclaimer. Default is \"Enter\"."
+msgstr ""
+
+#: disclaimer.module:192
+msgid "Disclaimer options"
+msgstr ""
+
+#: disclaimer.module:193
+msgid "Visit !url for settings explanation."
+msgstr ""
+
+#: disclaimer.module:197
+msgid "Minimum width"
+msgstr ""
+
+#: disclaimer.module:198;208;218
+msgid "px"
+msgstr ""
+
+#: disclaimer.module:202
+msgid "The minimum width of the lightbox containing the disclaimer. Default 400px."
+msgstr ""
+
+#: disclaimer.module:207
+msgid "Minimum height"
+msgstr ""
+
+#: disclaimer.module:212
+msgid "The minimum height of the lightbox containing the disclaimer. Default 300px."
+msgstr ""
+
+#: disclaimer.module:217
+msgid "Padding"
+msgstr ""
+
+#: disclaimer.module:222
+msgid "The padding of the lightbox containing the disclaimer. Default 20px."
+msgstr ""
+
+#: disclaimer.module:227
+msgid "Background color"
+msgstr ""
+
+#: disclaimer.module:232
+msgid "The hex color of the lightbox background. Default #000000."
+msgstr ""
+
+#: disclaimer.module:239
+msgid "Disclaimer advanced options"
+msgstr ""
+
+#: disclaimer.module:243
+msgid "Show disclaimer when logged user came back."
+msgstr ""
+
+#: disclaimer.module:245
+msgid "Show disclaimer for auto-login user on a new session. Default is yes. Note: this option is complementary to \"bypass disclaimer\" access."
+msgstr ""
+
+#: disclaimer.module:250
+msgid "Javascript"
+msgstr ""
+
+#: disclaimer.module:253
+msgid "Header"
+msgstr ""
+
+#: disclaimer.module:254
+msgid "Footer"
+msgstr ""
+
+#: disclaimer.module:256
+msgid "Where the javascript is loaded. Header is default, but could be useful to load on footer for conflict with other js. Note: this is only for disclaimer javascript and not jquery.nyroModal.js"
+msgstr ""
+
+#: disclaimer.module:260
+msgid "Debug mode"
+msgstr ""
+
+#: disclaimer.module:263
+msgid "False"
+msgstr ""
+
+#: disclaimer.module:264
+msgid "True"
+msgstr ""
+
+#: disclaimer.module:266
+msgid "Debug mode for the NyroModal."
+msgstr ""
+
+#: disclaimer.module:272
+msgid "Disclaimer cookie options"
+msgstr ""
+
+#: disclaimer.module:273
+msgid "EXPERIMENTAL: Use with CAUTION."
+msgstr ""
+
+#: disclaimer.module:277
+msgid "Disclaimer cookie name"
+msgstr ""
+
+#: disclaimer.module:279
+msgid "Set the cookie path. Default is \"disclaimerShow\"."
+msgstr ""
+
+#: disclaimer.module:284
+msgid "Disclaimer cookie path"
+msgstr ""
+
+#: disclaimer.module:286
+msgid "Set the cookie path. Default is \"/\" (recommended for access on all your site). Empty get server path."
+msgstr ""
+
+#: disclaimer.module:290
+msgid "Disclaimer cookie domain"
+msgstr ""
+
+#: disclaimer.module:292
+msgid "Set the cookie domain. Empty set default server domain."
+msgstr ""
+
+#: disclaimer.module:315
+msgid "You must enter a numeric padding."
+msgstr ""
+
+#: disclaimer.module:318
+msgid "You must enter a bgColor."
+msgstr ""
+
+#: disclaimer.module:321;324
+msgid "You must enter a width greater than 0 pixels."
+msgstr ""
+
+#: disclaimer.module:327
+msgid "You must enter a height greater than 0 pixels."
+msgstr ""
+
+#: disclaimer.module:68
+msgid "administer disclaimer settings"
+msgstr ""
+
+#: disclaimer.module:68
+msgid "bypass disclaimer"
+msgstr ""
+
+#: disclaimer.module:0
+msgid "disclaimer"
+msgstr ""
+
+#: disclaimer.install:11
+msgid "To configure your disclaimer. Go to the <a href=\"!url\">disclaimer setting page</a>."
+msgstr ""
+
+#: disclaimer.install:65
+msgid "Disclaimer uninstall properly."
+msgstr ""
+
+#: (duplicate) disclaimer.install:25 
+msgid "Disclaimer module"
+msgstr ""
+
+#: (duplicate) disclaimer.install:26 
+msgid "Please create \"nyromodal\" folder in disclaimer module then copy and extract the nyroModal content with subfolders at %mod (no need php files). Rename the script you want to use (ex : jquery.nyroModal-1.4.2.min.js -> jquery.nyroModal.js - packed script is recommended).<br/>You can get the nyroModal 1.4.2+ code at !url"
+msgstr ""
+
+#: (duplicate) disclaimer.install:28 
+msgid "Copy and rename jquery.nyroModal.js"
+msgstr ""
+
+#: disclaimer.info:0
+msgid "A nice lightbox disclaimer."
+msgstr ""
+
