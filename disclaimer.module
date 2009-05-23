@@ -5,6 +5,7 @@
  * Create and show disclaimer for your site.
  * Visotors need js enabled and accept cookie
  *
+ * todo: alert visitor if js disable and set no js mode (frontpage redirect)
  *
  * This module is for Drupal 5.x only.
  *
@@ -16,48 +17,50 @@
 /**
  * Implementation of hook_menu().
  */
-function disclaimer_menu($may_cache) {
+function disclaimer_menu() {
   $items = array();
-  if ($may_cache) {
     // disclaimer page
-    $items[] = array(
-      'path' => 'disclaimer',
-      'title' => t('Disclaimer'),
-      'callback' => '_disclaimer_get_content',
-      'access' => user_access('access content'),
-      'type' => MENU_NORMAL_ITEM,
+    $items['disclaimer'] = array(
+      'title' => 'disclaimer',
+      'page callback' => '_disclaimer_get_content',
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
     );
     // configuration page of the Disclaimer module
-    $items[] = array(
-      'path' => 'admin/settings/disclaimer',
-      'title' => t('Disclaimer'),
-      'description' => t('Administer Disclaimer settings.'),
-      'callback' => 'drupal_get_form',
-      'callback arguments' => array('disclaimer_admin_settings'),
-      'access' => user_access('administer Disclaimer settings'),
-      'type' => MENU_NORMAL_ITEM,
+    $items['admin/settings/disclaimer'] = array(
+      'title' => 'Disclaimer settings',
+      'description' => 'Administer Disclaimer settings.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('disclaimer_admin_settings'),
+      'access callback' => 'user_access',
+      'accesss arguments' => array('administer Disclaimer settings'),
     );
-  }
-  else {
+
+  return $items;
+}
+
+/**
+ * Implementation of hook_init().
+ */
+function disclaimer_init() {
     global $user;
     if (!user_access('bypass disclaimer') || (variable_get('disclaimer_logged', 1) == 1 && $user->uid)) {
         $path = drupal_get_path('module', 'disclaimer');
-        $path_css = '/nyromodal/styles/nyroModal.css';
-        $path_js = '/nyromodal/js/jquery.nyroModal.js';
+        $path_css = '/nyroModal/styles/nyroModal.css';
+        $path_js = '/nyroModal/js/jquery.nyroModal.js';
         if (file_exists($path . $path_css)) {
-          drupal_add_css(drupal_get_path('module', 'disclaimer') .'/nyromodal/styles/nyroModal.css'); 
+          drupal_add_css(drupal_get_path('module', 'disclaimer') .'/nyroModal/styles/nyroModal.css');
         }
         if (file_exists($path . $path_js)) {
-          drupal_add_js(drupal_get_path('module', 'disclaimer') .'/nyromodal/js/jquery.nyroModal.js');
+          drupal_add_js(drupal_get_path('module', 'disclaimer') .'/nyroModal/js/jquery.nyroModal.js');
         }
         elseif ($user->uid == 1) {
-          drupal_set_message(t('Can\'t load jquery.nyroModal.js for disclaimer module. Please follow !url.', array('!url' => l('Disclaimer settings instructions on status page', 'admin/logs/status'))), 'error');
+          drupal_set_message(t('Can\'t load jquery.nyroModal.js for disclaimer module. Please follow !url.', array('!url' => l('Disclaimer settings instructions on status page', 'admin/reports/status'))), 'error');
         }
         drupal_add_js(drupal_get_path('module', 'disclaimer') .'/disclaimer.js', 'module', variable_get('disclaimer_location_js', 'header'));
         drupal_add_js(_disclaimer_get_js(), 'inline', variable_get('disclaimer_location_js', 'header'));
     }
-  }
-  return $items;
+
 }
 
 /**
@@ -189,7 +192,7 @@ function disclaimer_admin_settings() {
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
     '#title' => t('Disclaimer options'),
-    '#description' => t('Visit !url for settings explanation.', array('!url' => l('http://nyromodal.nyrodev.com/', 'http://nyromodal.nyrodev.com/', array(), NULL, NULL, FALSE, TRUE))),
+    '#description' => t('Visit !url for settings explanation.', array('!url' => l('http://nyromodal.nyrodev.com/', 'http://nyromodal.nyrodev.com/', array('html' => TRUE)))),
   );
   $form['options']['disclaimer_width'] = array(
     '#type' => 'textfield',
@@ -298,17 +301,17 @@ function disclaimer_admin_settings() {
  *
  * Ensure that numeric value are numeric... and set input format
  */
-function disclaimer_admin_settings_validate($form_id, $form_values) {
-  $height = $form_values['disclaimer_height'];
-  $width = $form_values['disclaimer_width'];
-  $padding = $form_values['disclaimer_padding'];
-  $bgcolor =  $form_values['disclaimer_bgcolor'];
-  
-  if ($form_values['disclaimer_input_format']) {
-    variable_set('disclaimer_content_format', $form_values['disclaimer_input_format']);
+function disclaimer_admin_settings_validate($form, &$form_state) {
+  $height = $form_state['values']['disclaimer_height'];
+  $width = $form_state['values']['disclaimer_width'];
+  $padding = $form_state['values']['disclaimer_padding'];
+  $bgcolor =  $form_state['values']['disclaimer_bgcolor'];
+
+  if ($form_state['values']['disclaimer_input_format']) {
+    variable_set('disclaimer_content_format', $form_state['values']['disclaimer_input_format']);
   }
-  if ($form_values['disclaimer_footer_input_format']) {
-    variable_set('disclaimer_content_footer_format', $form_values['disclaimer_footer_input_format']);
+  if ($form_state['values']['disclaimer_footer_input_format']) {
+    variable_set('disclaimer_content_footer_format', $form_state['values']['disclaimer_footer_input_format']);
   }
   if (!empty($padding) && !is_numeric($padding)) {
     form_set_error('disclaimer_padding', t('You must enter a numeric padding.'));
@@ -332,7 +335,7 @@ function disclaimer_admin_settings_validate($form_id, $form_values) {
 function disclaimer_footer() {
   global $user;
   if (!user_access('bypass disclaimer') || (variable_get('disclaimer_logged', 1) == 1 && $user->uid)) {
-    $output = '<div>'. l('&nbsp;', 'disclaimer', array('id' => 'disclaimer', 'style' => 'display:none;'), NULL, NULL, FALSE, TRUE) .'</div>';
+    $output = '<div>'. l('&nbsp;', 'disclaimer', array('attributes' => array('id' => 'disclaimer', 'style' => 'display:none;'), 'html' => TRUE)) .'</div>';
   }
   return $output;
 }
@@ -357,8 +360,12 @@ function _disclaimer_get_content() {
           $exit = variable_get('disclaimer_exit_txt', t('EXIT'));
     }
 
-    $enter = l($enter, $enter_url, array('onclick' => 'WriteCookie(\''. variable_get('disclaimer_cookie_name', 'disclaimerShow') .'\', \'1\');$.nyroModalRemove();'), NULL, NULL, FALSE, TRUE);
-    $exit = l($exit, $exit_url, array(), NULL, NULL, FALSE, TRUE);
+    $enter = /* TODO
+   Please manually fix the parameters on the l() or url() function on the next line.
+   Typically, this was not changed because of a function call inside an array call like
+   array('title' => t('View user profile.')).*/
+l($enter, $enter_url, array('onclick' => 'WriteCookie(\''. variable_get('disclaimer_cookie_name', 'disclaimerShow') .'\', \'1\');$.nyroModalRemove();'), NULL, NULL, FALSE, TRUE);
+    $exit = l($exit, $exit_url, array('html' => TRUE));
     $rows[] = array(
       array('data' => $enter, 'align' => 'center'),
       array('data' => $exit, 'align' => 'center'),
@@ -384,7 +391,7 @@ function _disclaimer_get_js() {
   $height = variable_get('disclaimer_height', 300);
   $padding = variable_get('disclaimer_padding', 20);
   $bgcolor = variable_get('disclaimer_bgcolor', '000000');
-  
+
   $js = 'function WriteCookie(nom, valeur){
            var argv=WriteCookie.arguments;
            var argc=WriteCookie.arguments.length;
@@ -414,8 +421,8 @@ function _disclaimer_get_js() {
 
   $js .= 'if (ReadCookie("'. variable_get('disclaimer_cookie_name', 'disclaimerShow') .'") == null) {
             $(document).ready(
-                function(){ 
-                    $(\'#disclaimer\').nyroModalManual({modal: true, minWidth: '. $width .', minHeight: '. $height .', padding: '. $padding .', debug: '. $debug .', bgColor: \'#'. $bgcolor .'\'}); 
+              function(){
+                    $(\'#disclaimer\').nyroModalManual({modal: true, minWidth:'. $width .', minHeight:'. $height .', padding:'. $padding .', debug:'. $debug .', bgcolor:\'#'. $bgcolor .'\'});
                 }
             );
         }';

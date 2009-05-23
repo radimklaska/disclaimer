@@ -1,4 +1,5 @@
 ; $Id$
 name = Disclaimer
 description = A nice lightbox disclaimer.
-dependencies = jquery_update
+
+core = 6.x
