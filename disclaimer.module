@@ -114,7 +114,7 @@ function disclaimer_admin_settings() {
     '#type' => 'textfield',
     '#title' => t('Disclaimer enter url'),
     '#default_value' => variable_get('disclaimer_enter_url', ''),
-    '#description' => t('Set the url when press Enter on disclaimer. Empty is your front page. Use Drupal system path.'),
+    '#description' => t('Set the url when press Enter on disclaimer. Empty is curent visitor page. Use Drupal system path.'),
   );
   $form['disclaimer_action']['disclaimer_exit_url'] = array(
     '#type' => 'textfield',
@@ -346,7 +346,7 @@ function disclaimer_footer() {
 function _disclaimer_get_content() {
     $action_type = variable_get('disclaimer_action_type', 'text');
     $exit_url = variable_get('disclaimer_exit_url', 'http://www.google.com');
-    $enter_url = variable_get('disclaimer_enter_url', '<front>');
+    $enter_url = variable_get('disclaimer_enter_url', '');
 
     switch ($action_type) {
         case "image":

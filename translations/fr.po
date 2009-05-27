@@ -61,7 +61,7 @@ msgid "Disclaimer enter url"
 msgstr "Url d'entrée du disclaimer"
 
 #: disclaimer.module:115
-msgid "Set the url when press Enter on disclaimer. Empty is your front page. Use Drupal system path."
+msgid "Set the url when press Enter on disclaimer. Empty is curent visitor page. Use Drupal system path."
 msgstr "Indiquer l'url quand l'option entrer du disclaimer est choisi. Si vide renvoi à la page d'accueil de votre site. Utilisez les chemins drupal."
 
 #: disclaimer.module:119
