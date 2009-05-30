@@ -1,0 +1,26 @@
+/* $Id
+
+Disclaimer x.x-x.x, xxxx-xx-xx
+------------------------------
+
+
+Disclaimer 6.x-1.x, xxxx-xx-xx
+------------------------------
+
+
+Disclaimer 6.x-1.2, 2009-05-30
+------------------------------
+#471176 by ctalley5: Added age verification.
+#471908 by miacbi: Added disclaimer visibility, localization through node, enter url no redirect if empty.
+#476430 by LAN_DRUPAL_aka_...: Fixed Install.txt.
+Added some other feature : new jQuery modal plugin, jqModal very light.
+Added node selection for content and footer of the disclaimer.
+New file disclaimer.admin.inc.
+Minor correction.
+Updated README.txt.
+Updated disclaimer.pot.
+Updated fr.pot.
+
+Disclaimer 6.x-1.2, 2009-05-23
+------------------------------
+Initial release for Drupal 5.x and Drupal 6.x

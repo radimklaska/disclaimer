@@ -60,5 +60,8 @@ function disclaimer_uninstall() {
   variable_del('disclaimer_cookie_path');
   variable_del('disclaimer_cookie_domain');
   variable_del('disclaimer_cookie_name');
+  variable_del('disclaimer_visibility');
+  variable_del('disclaimer_pages');
+  variable_del('disclaimer_node');
   drupal_set_message(t('Disclaimer uninstall properly.'));
 }
