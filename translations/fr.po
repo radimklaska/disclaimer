@@ -427,10 +427,10 @@ msgid "You must enter a numeric overlay."
 msgstr ""
 
 #: disclaimer.module:63
-msgid "Can't load modal script for disclaimer module. Please follow !url."
+msgid "Can't find any modal script. Please see INSTALL.txt."
 msgstr ""
-"Le script modal pour le module disclaimer ne peut être chargé. Merci "
-"de suivre !url."
+"Aucun script modal pour le module disclaimer ne peut être trouvé. Merci "
+"de suivre les instructions de INSTALL.txt."
 
 #: disclaimer.module:258
 msgid "Date of Birth"

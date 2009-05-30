@@ -10,6 +10,7 @@
  * @return array an array of forms
  */
 function disclaimer_admin_settings() {
+  global $user;
   $disclaimer = _disclaimer_get_content();
   $width = variable_get('disclaimer_width', 400);
   $height = variable_get('disclaimer_height', 300);
@@ -24,6 +25,12 @@ function disclaimer_admin_settings() {
   }
   if (file_exists($path .'/jqModal/jqModal.js')) {
     $optionsmodal['jqModal'] = 'jqModal';
+  }
+  if (empty($optionsmodal)) {
+    $optionsmodal[] = t('No modal script found');
+    if ($user->uid == 1) {
+      drupal_set_message(t('Can\'t find any modal script. Please see INSTALL.txt.'), 'error');
+    }
   }
   $form['disclaimer_preview'] = array(
     '#type' => 'fieldset',

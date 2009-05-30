@@ -379,7 +379,7 @@ msgid "You must enter a numeric overlay."
 msgstr ""
 
 #: disclaimer.module:63
-msgid "Can't load modal script for disclaimer module. Please follow !url."
+msgid "Can't find any modal script. Please see INSTALL.txt."
 msgstr ""
 
 #: disclaimer.module:258

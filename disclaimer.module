@@ -59,9 +59,6 @@ function disclaimer_init() {
     if (file_exists($path . $path_js)) {
       drupal_add_js(drupal_get_path('module', 'disclaimer') . $path_js);
     }
-    elseif ($user->uid == 1) {
-      drupal_set_message(t('Can\'t load modal script for disclaimer module. Please follow !url.', array('!url' => l('Disclaimer settings instructions on status page', 'admin/reports/status'))), 'error');
-    }
     drupal_add_js(drupal_get_path('module', 'disclaimer') .'/disclaimer.js', 'module', variable_get('disclaimer_location_js', 'header'));
     drupal_add_js(_disclaimer_get_js(), 'inline', variable_get('disclaimer_location_js', 'header'));
   }
