@@ -5,9 +5,7 @@
  * Create and show disclaimer for your site.
  * Visotors need js enabled and accept cookie
  *
- * todo: alert visitor if js disable and set no js mode (frontpage redirect)
- *
- * This module is for Drupal 5.x only.
+ * This module is for Drupal 6.x only.
  *
  * Module by: Mog
  * Mailto: tech@arthura.fr
@@ -21,19 +19,20 @@ function disclaimer_menu() {
   $items = array();
     // disclaimer page
     $items['disclaimer'] = array(
-      'title' => 'disclaimer',
+      'title' => 'Disclaimer',
       'page callback' => '_disclaimer_get_content',
       'access arguments' => array('access content'),
       'type' => MENU_SUGGESTED_ITEM,
     );
     // configuration page of the Disclaimer module
     $items['admin/settings/disclaimer'] = array(
-      'title' => 'Disclaimer settings',
+      'title' => 'Disclaimer',
       'description' => 'Administer Disclaimer settings.',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('disclaimer_admin_settings'),
       'access callback' => 'user_access',
-      'accesss arguments' => array('administer Disclaimer settings'),
+      'accesss arguments' => array('administer disclaimer settings'),
+      'file' => 'disclaimer.admin.inc',
     );
 
   return $items;
@@ -43,24 +42,26 @@ function disclaimer_menu() {
  * Implementation of hook_init().
  */
 function disclaimer_init() {
-    global $user;
-    if (!user_access('bypass disclaimer') || (variable_get('disclaimer_logged', 1) == 1 && $user->uid)) {
-        $path = drupal_get_path('module', 'disclaimer');
-        $path_css = '/nyroModal/styles/nyroModal.css';
-        $path_js = '/nyroModal/js/jquery.nyroModal.js';
-        if (file_exists($path . $path_css)) {
-          drupal_add_css(drupal_get_path('module', 'disclaimer') .'/nyroModal/styles/nyroModal.css');
-        }
-        if (file_exists($path . $path_js)) {
-          drupal_add_js(drupal_get_path('module', 'disclaimer') .'/nyroModal/js/jquery.nyroModal.js');
-        }
-        elseif ($user->uid == 1) {
-          drupal_set_message(t('Can\'t load jquery.nyroModal.js for disclaimer module. Please follow !url.', array('!url' => l('Disclaimer settings instructions on status page', 'admin/reports/status'))), 'error');
-        }
-        drupal_add_js(drupal_get_path('module', 'disclaimer') .'/disclaimer.js', 'module', variable_get('disclaimer_location_js', 'header'));
-        drupal_add_js(_disclaimer_get_js(), 'inline', variable_get('disclaimer_location_js', 'header'));
+  global $user;
+  if ((!user_access('bypass disclaimer') || (variable_get('disclaimer_logged', 1) == 1 && $user->uid)) && (_disclaimer_visibility() == 1)) {
+    $path = drupal_get_path('module', 'disclaimer');
+    if (variable_get('disclaimer_modal', 'nyroModal') == 'nyroModal') {
+      $path_css = '/nyroModal/styles/nyroModal.css';
+      $path_js = '/nyroModal/js/jquery.nyroModal.js';
     }
-
+    else {
+      $path_css = '/jqModal/jqModal.css';
+      $path_js = '/jqModal/jqModal.js';
+    }
+    if (file_exists($path . $path_css)) {
+      drupal_add_css(drupal_get_path('module', 'disclaimer') . $path_css);
+    }
+    if (file_exists($path . $path_js)) {
+      drupal_add_js(drupal_get_path('module', 'disclaimer') . $path_js);
+    }
+    drupal_add_js(drupal_get_path('module', 'disclaimer') .'/disclaimer.js', 'module', variable_get('disclaimer_location_js', 'header'));
+    drupal_add_js(_disclaimer_get_js(), 'inline', variable_get('disclaimer_location_js', 'header'));
+  }
 }
 
 /**
@@ -70,264 +71,6 @@ function disclaimer_perm() {
   return array('administer disclaimer settings', 'bypass disclaimer');
 }
 
-/* Setup settings form for disclaimer
- * @return array an array of forms
- */
-function disclaimer_admin_settings() {
-  $disclaimer = _disclaimer_get_content();
-  $width = variable_get('disclaimer_width', 400);
-  $height = variable_get('disclaimer_height', 300);
-
-  $form['disclaimer_preview'] = array(
-    '#type' => 'fieldset',
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#title' => t('Disclaimer preview'),
-  );
-  $form['disclaimer_preview']['content'] = array(
-    '#type' => 'markup',
-    '#value' => $disclaimer,
-  );
-  $form['disclaimer_content'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Disclaimer content'),
-    '#rows' => 15,
-    '#default_value' => variable_get('disclaimer_content', ''),
-    '#description' => t('This is the body of the disclaimer, you can use HTML and choose input filter properly.'),
-    '#required' => TRUE
-  );
-  $form['disclaimer_input_format'] = filter_form(variable_get('disclaimer_content_format', 1), NULL, array('disclaimer_input_format'));
-  $form['disclaimer_content_footer'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Disclaimer footer'),
-    '#default_value' => variable_get('disclaimer_content_footer', ''),
-    '#description' => t('Optional: this is the footer of the disclaimer, under ENTER/EXIT. you can use HTML and choose input filter properly.'),
-  );
-  $form['disclaimer_footer_input_format'] = filter_form(variable_get('disclaimer_content_footer_format', 1), NULL, array('disclaimer_footer_input_format'));
-  $form['disclaimer_action'] = array(
-    '#type' => 'fieldset',
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#title' => t('Disclaimer action'),
-  );
-  $form['disclaimer_action']['disclaimer_enter_url'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Disclaimer enter url'),
-    '#default_value' => variable_get('disclaimer_enter_url', ''),
-    '#description' => t('Set the url when press Enter on disclaimer. Empty is curent visitor page. Use Drupal system path.'),
-  );
-  $form['disclaimer_action']['disclaimer_exit_url'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Disclaimer exit url'),
-    '#default_value' => variable_get('disclaimer_exit_url', 'http://www.google.com'),
-    '#description' => t('Set the url when press Exit on disclaimer. Default is "http://www.google.com".'),
-  );
-  $form['disclaimer_action']['disclaimer_action_type'] = array(
-    '#type' => 'select',
-    '#title' => t('Disclaimer action style'),
-    '#default_value' => variable_get('disclaimer_action_type', 'text'),
-    '#options' => array(
-      'text' => t('Use text'),
-      'image' => t('Use images'),
-    ),
-    '#description' => t('Select what do you want to use for "ENTER" or "EXIT" action on the disclaimer.'),
-  );
-  $form['disclaimer_action']['text'] = array(
-    '#type' => 'fieldset',
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#title' => t('Text settings'),
-  );
-  $form['disclaimer_action']['text']['disclaimer_enter_txt'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Disclaimer enter text'),
-    '#size' => 20,
-    '#default_value' => variable_get('disclaimer_enter_txt', t('ENTER')),
-    '#description' => t('Set the text for Enter action on disclaimer. Default is "ENTER"'),
-  );
-  $form['disclaimer_action']['text']['disclaimer_exit_txt'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Disclaimer exit text'),
-    '#size' => 20,
-    '#default_value' => variable_get('disclaimer_exit_txt', t('EXIT')),
-    '#description' => t('Set the text for Exit action on disclaimer. Default is "EXIT"'),
-  );
-  $form['disclaimer_action']['img'] = array(
-    '#type' => 'fieldset',
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#title' => t('Image settings'),
-  );
-  $form['disclaimer_action']['img']['disclaimer_enter_img'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Disclaimer enter image name'),
-    '#size' => 20,
-    '#default_value' => variable_get('disclaimer_enter_img', 'enter.png'),
-    '#description' => t('Set the image name to be used for Enter action on disclaimer. Path is relative to /files/, so the image need to be in your /files directory. Default is "enter.png"'),
-  );
-  $form['disclaimer_action']['img']['disclaimer_enter_img_alt'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Disclaimer enter image alt/title text'),
-    '#size' => 20,
-    '#default_value' => variable_get('disclaimer_enter_img_alt', 'ENTER'),
-    '#description' => t('Set the image alt/title text to be used for Enter action on disclaimer. Default is "Enter".'),
-  );
-
-  $form['disclaimer_action']['img']['disclaimer_exit_img'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Disclaimer exit image name'),
-    '#size' => 20,
-    '#default_value' => variable_get('disclaimer_exit_img', 'exit.png'),
-    '#description' => t('Set the image name to be used for Exit action on disclaimer. Path is relative to /files/, so the image need to be in your /files directory. Default is "exit.png"'),
-  );
-  $form['disclaimer_action']['img']['disclaimer_exit_img_alt'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Disclaimer exit image alt/title text'),
-    '#size' => 20,
-    '#default_value' => variable_get('disclaimer_exit_img_alt', 'EXIT'),
-    '#description' => t('Set the image alt/title text to be used for Exit action on disclaimer. Default is "Enter".'),
-  );
-  $form['options'] = array(
-    '#type' => 'fieldset',
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#title' => t('Disclaimer options'),
-    '#description' => t('Visit !url for settings explanation.', array('!url' => l('http://nyromodal.nyrodev.com/', 'http://nyromodal.nyrodev.com/', array('html' => TRUE)))),
-  );
-  $form['options']['disclaimer_width'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Minimum width'),
-    '#field_suffix' => t('px'),
-    '#default_value' => variable_get('disclaimer_width', 400),
-    '#size' => 4,
-    '#maxlength' => 4,
-    '#description' => t('The minimum width of the lightbox containing the disclaimer. Default 400px.'),
-    '#required' => TRUE
-  );
-  $form['options']['disclaimer_height'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Minimum height'),
-    '#field_suffix' => t('px'),
-    '#default_value' => variable_get('disclaimer_height', 300),
-    '#size' => 4,
-    '#maxlength' => 4,
-    '#description' => t('The minimum height of the lightbox containing the disclaimer. Default 300px.'),
-    '#required' => TRUE
-  );
-  $form['options']['disclaimer_padding'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Padding'),
-    '#field_suffix' => t('px'),
-    '#default_value' => variable_get('disclaimer_padding', 20),
-    '#size' => 3,
-    '#maxlength' => 3,
-    '#description' => t('The padding of the lightbox containing the disclaimer. Default 20px.'),
-    '#required' => TRUE
-  );
-  $form['options']['disclaimer_bgcolor'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Background color'),
-    '#field_prefix' => '#',
-    '#default_value' => variable_get('disclaimer_bgcolor', '000000'),
-    '#size' => 6,
-    '#maxlength' => 6,
-    '#description' => t('The hex color of the lightbox background. Default #000000.'),
-    '#required' => TRUE
-  );
-  $form['advanced'] = array(
-    '#type' => 'fieldset',
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#title' => t('Disclaimer advanced options'),
-  );
-  $form['advanced']['disclaimer_logged'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Show disclaimer when logged user came back.'),
-    '#default_value' => variable_get('disclaimer_logged', 1),
-    '#description' => t('Show disclaimer for auto-login user on a new session. Default is yes. Note: this option is complementary to "bypass disclaimer" access.'),
-  );
-
-  $form['advanced']['disclaimer_location_js'] = array(
-    '#type' => 'select',
-    '#title' => t('Javascript'),
-    '#default_value' => variable_get('disclaimer_location_js', 'header'),
-    '#options' => array(
-      'header' => t('Header'),
-      'footer' => t('Footer'),
-    ),
-    '#description' => t('Where the javascript is loaded. Header is default, but could be useful to load on footer for conflict with other js. Note: this is only for disclaimer javascript and not jquery.nyroModal.js'),
-  );
-    $form['advanced']['disclaimer_debug'] = array(
-    '#type' => 'select',
-    '#title' => t('Debug mode'),
-    '#default_value' => variable_get('disclaimer_debug', 'false'),
-    '#options' => array(
-      'false' => t('False'),
-      'true' => t('True'),
-    ),
-    '#description' => t('Debug mode for the NyroModal.'),
-  );
-  $form['advanced']['cookie'] = array(
-    '#type' => 'fieldset',
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#title' => t('Disclaimer cookie options'),
-    '#description' => t('EXPERIMENTAL: Use with CAUTION.'),
-  );
-  $form['advanced']['cookie']['disclaimer_cookie_name'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Disclaimer cookie name'),
-    '#default_value' => variable_get('disclaimer_cookie_name', 'disclaimerShow'),
-    '#description' => t('Set the cookie path. Default is "disclaimerShow".'),
-    '#required' => TRUE
-  );
-  $form['advanced']['cookie']['disclaimer_cookie_path'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Disclaimer cookie path'),
-    '#default_value' => variable_get('disclaimer_cookie_path', '/'),
-    '#description' => t('Set the cookie path. Default is "/" (recommended for access on all your site). Empty get server path.'),
-  );
-  $form['advanced']['cookie']['disclaimer_cookie_domain'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Disclaimer cookie domain'),
-    '#default_value' => variable_get('disclaimer_cookie_domain', ''),
-    '#description' => t('Set the cookie domain. Empty set default server domain.'),
-  );
-    return system_settings_form($form);
-}
-
-/**
- * Validation function for the general configuration form.
- *
- * Ensure that numeric value are numeric... and set input format
- */
-function disclaimer_admin_settings_validate($form, &$form_state) {
-  $height = $form_state['values']['disclaimer_height'];
-  $width = $form_state['values']['disclaimer_width'];
-  $padding = $form_state['values']['disclaimer_padding'];
-  $bgcolor =  $form_state['values']['disclaimer_bgcolor'];
-
-  if ($form_state['values']['disclaimer_input_format']) {
-    variable_set('disclaimer_content_format', $form_state['values']['disclaimer_input_format']);
-  }
-  if ($form_state['values']['disclaimer_footer_input_format']) {
-    variable_set('disclaimer_content_footer_format', $form_state['values']['disclaimer_footer_input_format']);
-  }
-  if (!empty($padding) && !is_numeric($padding)) {
-    form_set_error('disclaimer_padding', t('You must enter a numeric padding.'));
-  }
-  if (empty($bgcolor)) {
-    form_set_error('disclaimer_bgcolor', t('You must enter a bgcolor.'));
-  }
-  if (!empty($width) && (!is_numeric($width) || $width < 0)) {
-    form_set_error('disclaimer_width', t('You must enter a width greater than 0 pixels.'));
-  }
-  if (!empty($height) && (!is_numeric($height) || $height < 0)) {
-    form_set_error('disclaimer_height', t('You must enter a height greater than 0 pixels.'));
-  }
-  cache_clear_all();
-}
-
 /**
  * Declare footer hook
  * @return string A string containing HTML to be inserted
@@ -335,7 +78,12 @@ function disclaimer_admin_settings_validate($form, &$form_state) {
 function disclaimer_footer() {
   global $user;
   if (!user_access('bypass disclaimer') || (variable_get('disclaimer_logged', 1) == 1 && $user->uid)) {
+    if (variable_get('disclaimer_modal', 'nyroModal') == 'jqModal') {
+      $output = '<div id="disclaimer" style="display:none;" class="jqmWindow">&nbsp</div>';
+    }
+    else {
     $output = '<div>'. l('&nbsp;', 'disclaimer', array('attributes' => array('id' => 'disclaimer', 'style' => 'display:none;'), 'html' => TRUE)) .'</div>';
+    }
   }
   return $output;
 }
@@ -347,11 +95,17 @@ function _disclaimer_get_content() {
     $action_type = variable_get('disclaimer_action_type', 'text');
     $exit_url = variable_get('disclaimer_exit_url', 'http://www.google.com');
     $enter_url = variable_get('disclaimer_enter_url', '');
+    $nid = variable_get('disclaimer_node', '');
+    $nid_footer = variable_get('disclaimer_node_footer', '');
+    $age = variable_get('disclaimer_age_form', 0);
+    $age_limit = variable_get('disclaimer_age_limit', 18);
+    $modal = variable_get('disclaimer_modal', 'nyroModal');
+    $js = '';
 
     switch ($action_type) {
         case "image":
           $enter_alt = variable_get('disclaimer_enter_img_alt', t('ENTER'));
-          $exit_alt = variable_get('disclaimer_enter_img_alt', t('ENTER'));
+          $exit_alt = variable_get('disclaimer_exit_img_alt', t('EXIT'));
           $enter = theme('image', 'files/'. variable_get('disclaimer_enter_img', 'enter.png'), $enter_alt, $enter_alt);
           $exit = theme('image', 'files/'. variable_get('disclaimer_exit_img', 'exit.png'), $exit_alt, $exit_alt);
         break;
@@ -360,20 +114,48 @@ function _disclaimer_get_content() {
           $exit = variable_get('disclaimer_exit_txt', t('EXIT'));
     }
 
-    $enter = /* TODO
-   Please manually fix the parameters on the l() or url() function on the next line.
-   Typically, this was not changed because of a function call inside an array call like
-   array('title' => t('View user profile.')).*/
-l($enter, $enter_url, array('onclick' => 'WriteCookie(\''. variable_get('disclaimer_cookie_name', 'disclaimerShow') .'\', \'1\');$.nyroModalRemove();'), NULL, NULL, FALSE, TRUE);
+    if ($age == 1) {
+      $age_form = drupal_get_form('disclaimer_age_form');
+      $rows[] = array(
+        array('data' => $age_form, 'align' => 'center', 'colspan' => '2')
+      );
+      $js = "CheckAge('". variable_get('disclaimer_cookie_name', 'disclaimerShow') ."', ". $age_limit .", '". $exit_url ."', '". $modal ."');";
+    }
+    else {
+      $js = 'WriteCookie(\''. variable_get('disclaimer_cookie_name', 'disclaimerShow') .'\', \'1\');';
+      if ($modal == 'nyroModal') {
+        $js .= '$.nyroModalRemove();';
+      }
+      else {
+        $js .= '$(\'#disclaimer\').jqmHide();';
+      }
+    }
+
+    if ($enter_url) {
+      $enter = l($enter, $enter_url, array('attributes' => array('onclick' => $js), 'html' => TRUE));
+    }
+    else {
+      $enter = '<a href="javascript:void(0);" onclick="'. $js .'">'. $enter .'</a>';
+    }
     $exit = l($exit, $exit_url, array('html' => TRUE));
+
     $rows[] = array(
       array('data' => $enter, 'align' => 'center'),
       array('data' => $exit, 'align' => 'center'),
     );
-
-    $output = check_markup(variable_get('disclaimer_content', ''), variable_get('disclaimer_content_format', 1), 1);
+    if ($nid == 0) {
+      $output = check_markup(variable_get('disclaimer_content', ''), variable_get('disclaimer_content_format', 1), 1);
+    }
+    else {
+      $output = node_view(node_load($nid), FALSE, TRUE);
+    }
     $output .= theme('table', array(), $rows);
-    $output .= check_markup(variable_get('disclaimer_content_footer', ''), variable_get('disclaimer_content_footer_format', 1), 1);
+    if ($nid_footer == 0) {
+      $output .= check_markup(variable_get('disclaimer_content_footer', ''), variable_get('disclaimer_content_footer_format', 1), 1);
+    }
+    else {
+      $output .= node_view(node_load($nid_footer), FALSE, TRUE);
+    }
 
     return $output;
 }
@@ -385,18 +167,22 @@ function _disclaimer_get_js() {
   $cookie_path = variable_get('disclaimer_cookie_path', '/');
   $cookie_expires = variable_get('disclaimer_cookie_expires', '');
   $cookie_domain = variable_get('disclaimer_cookie_domain', '');
-  $cookie_secure = variable_get('disclaimer_cookie_secure', 'false');
-  $debug = variable_get('disclaimer_debug', 'false');
-  $width = variable_get('disclaimer_width', 400);
-  $height = variable_get('disclaimer_height', 300);
-  $padding = variable_get('disclaimer_padding', 20);
-  $bgcolor = variable_get('disclaimer_bgcolor', '000000');
-
-  $js = 'function WriteCookie(nom, valeur){
-           var argv=WriteCookie.arguments;
-           var argc=WriteCookie.arguments.length;
-           var expires=(argc > 2) ? argv[2] : null;
-           var secure=(argc > 5) ? argv[5] : false;'."\n";
+  $modal = variable_get('disclaimer_modal', 'nyroModal');
+  if ($modal == 'nyroModal') {
+    $debug = variable_get('disclaimer_debug', 'false');
+    $width = variable_get('disclaimer_width', 400);
+    $height = variable_get('disclaimer_height', 300);
+    $padding = variable_get('disclaimer_padding', 20);
+    $bgcolor = variable_get('disclaimer_bgcolor', '000000');
+  }
+  else {
+    $overlay = variable_get('disclaimer_jqmodal_overlay', 90);
+  }
+  $js = 'function WriteCookie(nom, valeur){'."\n";
+  $js .= 'var argv=WriteCookie.arguments;'."\n";
+  $js .= 'var argc=WriteCookie.arguments.length;'."\n";
+  $js .= 'var expires=(argc > 2) ? argv[2] : null;'."\n";
+  $js .= 'var secure=(argc > 5) ? argv[5] : false;'."\n";
   if (empty($cookie_path)) {
     $js .= 'var path=(argc > 3) ? argv[3] : null;'."\n";
   }
@@ -419,13 +205,55 @@ function _disclaimer_get_js() {
   }
   $js .= '((secure==true) ? "; secure" : "");}'."\n";
 
-  $js .= 'if (ReadCookie("'. variable_get('disclaimer_cookie_name', 'disclaimerShow') .'") == null) {
-            $(document).ready(
-              function(){
-                    $(\'#disclaimer\').nyroModalManual({modal: true, minWidth:'. $width .', minHeight:'. $height .', padding:'. $padding .', debug:'. $debug .', bgcolor:\'#'. $bgcolor .'\'});
-                }
-            );
-        }';
+  $js .= 'if (ReadCookie("'. variable_get('disclaimer_cookie_name', 'disclaimerShow') .'") == null) {';
+  $js .= '$(document).ready(function(){';
+  if ($modal == 'nyroModal') {
+    $js .= '$(\'#disclaimer\').nyroModalManual({modal:true, minWidth:'. $width .', minHeight:'. $height .', padding:'. $padding .', debug:'. $debug .', bgcolor:\'#'. $bgcolor .'\'});';
+  }
+  else {
+    $js .= '$(\'#disclaimer\').jqm({ajax:\''. base_path() .'/disclaimer\', overlay:'. $overlay .', modal:true}).jqmShow();';
+  }
+  $js .= '});}';
   return $js;
 }
 
+/**
+ * Calculate visibility of disclaimer if set
+ * function copy from block.module, thanks for the original code.
+ * @return bolean
+ */
+function _disclaimer_visibility() {
+  $visibility = variable_get('disclaimer_visibility', 0);
+  $pages = variable_get('disclaimer_pages', '');
+
+  if ($pages) {
+    if ($visibility < 2) {
+      $path = drupal_get_path_alias($_GET['q']);
+      $page_match = drupal_match_path($path, $pages);
+      if ($path != $_GET['q']) {
+        $page_match = $page_match || drupal_match_path($_GET['q'], $pages);
+      }
+      $page_match = !($visibility xor $page_match);
+    }
+    else {
+      $page_match = drupal_eval($pages);
+    }
+  }
+  else {
+    $page_match = TRUE;
+  }
+  return $page_match;
+}
+
+/**
+ * function to set age form on disclaimer
+ * @return array an array of forms
+ */
+function disclaimer_age_form() {
+  $form['disclaimer_age'] = array(
+    '#type' => 'date',
+    '#title' => t('Date of Birth'),
+    '#description' => t('You must be at least @age years old to visit @site.', array('@age' => variable_get('disclaimer_age_limit', 18), '@site' => variable_get('site_name', ''))),
+  );
+  return $form;
+}
