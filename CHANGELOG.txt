@@ -3,10 +3,8 @@
 Disclaimer x.x-x.x, xxxx-xx-xx
 ------------------------------
 
-
 Disclaimer 6.x-1.x, xxxx-xx-xx
 ------------------------------
-
 
 Disclaimer 6.x-1.1, 2009-05-30
 ------------------------------
@@ -36,3 +34,7 @@ Minor correction.
 #498256 by RAFA3L: Updated page-disclaimer.tpl.php and INSTALL.txt.
 Updated CHANGELOG.txt.
 Updated uninstall variable_del().
+
+Disclaimer 6.x-1.5, 2009-08-17
+------------------------------
+Error on 1.4 CVS release, wrong files.

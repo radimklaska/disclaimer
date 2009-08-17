@@ -3,16 +3,4 @@ name = Disclaimer
 description = A nice lightbox disclaimer.
 
 core = 6.x
-; Information added by drupal.org packaging script on 2009-05-30
-version = "6.x-1.2"
-core = "6.x"
-project = "disclaimer"
-datestamp = "1243651819"
-
-
-; Information added by drupal.org packaging script on 2009-05-30
-version = "6.x-1.3"
-core = "6.x"
-project = "disclaimer"
-datestamp = "1243673423"
 
