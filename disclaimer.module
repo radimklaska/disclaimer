@@ -106,8 +106,8 @@ function _disclaimer_get_content() {
         case "image":
           $enter_alt = variable_get('disclaimer_enter_img_alt', t('ENTER'));
           $exit_alt = variable_get('disclaimer_exit_img_alt', t('EXIT'));
-          $enter = theme('image', 'files/'. variable_get('disclaimer_enter_img', 'enter.png'), $enter_alt, $enter_alt);
-          $exit = theme('image', 'files/'. variable_get('disclaimer_exit_img', 'exit.png'), $exit_alt, $exit_alt);
+          $enter = theme('image', file_directory_path().'/'. variable_get('disclaimer_enter_img', 'enter.png'), $enter_alt, $enter_alt);
+          $exit = theme('image', file_directory_path().'/'. variable_get('disclaimer_exit_img', 'exit.png'), $exit_alt, $exit_alt);
         break;
         default:
           $enter = variable_get('disclaimer_enter_txt', t('ENTER'));
@@ -144,14 +144,14 @@ function _disclaimer_get_content() {
       array('data' => $exit, 'align' => 'center'),
     );
     if ($nid == 0) {
-      $output = check_markup(variable_get('disclaimer_content', ''), variable_get('disclaimer_content_format', 1), 1);
+      $output = check_markup(variable_get('disclaimer_content', ''), variable_get('disclaimer_content_format', 1), FALSE);
     }
     else {
       $output = node_view(node_load($nid), FALSE, TRUE);
     }
     $output .= theme('table', array(), $rows);
     if ($nid_footer == 0) {
-      $output .= check_markup(variable_get('disclaimer_content_footer', ''), variable_get('disclaimer_content_footer_format', 1), 1);
+      $output .= check_markup(variable_get('disclaimer_content_footer', ''), variable_get('disclaimer_content_footer_format', 1), FALSE);
     }
     else {
       $output .= node_view(node_load($nid_footer), FALSE, TRUE);
@@ -205,15 +205,15 @@ function _disclaimer_get_js() {
   }
   $js .= '((secure==true) ? "; secure" : "");}'."\n";
 
-  $js .= 'if (ReadCookie("'. variable_get('disclaimer_cookie_name', 'disclaimerShow') .'") == null) {';
-  $js .= '$(document).ready(function(){';
+  $js .= 'if (ReadCookie("'. variable_get('disclaimer_cookie_name', 'disclaimerShow') .'") == null) {'."\n";
+  $js .= '  $(document).ready(function(){'."\n";
   if ($modal == 'nyroModal') {
-    $js .= '$(\'#disclaimer\').nyroModalManual({modal:true, minWidth:'. $width .', minHeight:'. $height .', padding:'. $padding .', debug:'. $debug .', bgcolor:\'#'. $bgcolor .'\'});';
+    $js .= '    $(\'#disclaimer\').nyroModalManual({modal:true, minWidth:'. $width .', minHeight:'. $height .', padding:'. $padding .', debug:'. $debug .', bgcolor:\'#'. $bgcolor .'\'});'."\n";
   }
   else {
-    $js .= '$(\'#disclaimer\').jqm({ajax:\''. base_path() .'/disclaimer\', overlay:'. $overlay .', modal:true}).jqmShow();';
+    $js .= '    $(\'#disclaimer\').jqm({ajax:\''. base_path() .'disclaimer\', overlay:'. $overlay .', modal:true}).jqmShow();'."\n";
   }
-  $js .= '});}';
+  $js .= '  });'."\n".'}';
   return $js;
 }
 
@@ -257,3 +257,4 @@ function disclaimer_age_form() {
   );
   return $form;
 }
+
