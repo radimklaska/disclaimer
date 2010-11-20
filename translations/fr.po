@@ -3,7 +3,7 @@
 # French translation of Drupal (general)
 # Copyright YEAR NAME <EMAIL@ADDRESS>
 # Generated from files:
-#  disclaimer.admin.inc: n/a
+#  disclaimer.admin.inc,v 1.1.2.2 2009/08/17 07:50:35 mogtofu33
 #  disclaimer.module: n/a
 #  disclaimer.info: n/a
 #  disclaimer.install: n/a
@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2009-05-30 03:39+0200\n"
-"PO-Revision-Date: 2009-05-30 03:39+0200\n"
+"POT-Creation-Date: 2010-11-20 19:59+0100\n"
+"PO-Revision-Date: 2010-11-20 19:59+0100\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: French <EMAIL@ADDRESS>\n"
 "MIME-Version: 1.0\n"
@@ -22,79 +22,89 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n>1);\n"
 
-#: disclaimer.admin.inc:17
+#: disclaimer.admin.inc:18
 msgid "- None, use content form below -"
 msgstr "- Aucun, utiliser le champs ci dessous -"
 
+#: disclaimer.admin.inc:30
+msgid "No modal script found"
+msgstr "Aucun script modal trouvé"
+
 #: disclaimer.admin.inc:32
+msgid "Can't find any modal script. Please see INSTALL.txt."
+msgstr ""
+"Aucun script modal pour le module disclaimer ne peut être trouvé. "
+"Merci de suivre les instructions de INSTALL.txt."
+
+#: disclaimer.admin.inc:39
 msgid "Disclaimer preview"
 msgstr "Prévisualisation du disclaimer"
 
-#: disclaimer.admin.inc:42
+#: disclaimer.admin.inc:49
 msgid "Disclaimer content"
 msgstr "Contenu du disclaimer"
 
-#: disclaimer.admin.inc:46
+#: disclaimer.admin.inc:53
 msgid "Node to use for disclaimer content"
 msgstr "Noeud à utiliser pour le contenu du disclaimer"
 
-#: disclaimer.admin.inc:49
+#: disclaimer.admin.inc:56
 msgid "You can select a node to use for the body of the disclaimer."
 msgstr "Vous pouvez choisir un noeud à utiliser pour le corps du disclaimer."
 
-#: disclaimer.admin.inc:53
+#: disclaimer.admin.inc:60
 msgid "OR disclaimer content"
 msgstr "OU contenu du disclaimer"
 
-#: disclaimer.admin.inc:55
+#: disclaimer.admin.inc:62
 msgid "Optional: If you don't select a node, you can use this field for the body of the disclaimer. You can use HTML and choose input filter properly."
 msgstr ""
 "Facultatif : Si vous ne choisissez pas un noeud, vous pouvez utiliser "
 "ce champs comme corps du disclaimer. Vous pouvez utiliser du HTML et "
 "choisir le filtre d'entrée approprié."
 
-#: disclaimer.admin.inc:60
+#: disclaimer.admin.inc:67
 msgid "Node to use for disclaimer footer"
 msgstr "Noeud à utiliser pour le pied du disclaimer"
 
-#: disclaimer.admin.inc:63
+#: disclaimer.admin.inc:70
 msgid "You can select a node to use for the footer of the disclaimer."
 msgstr "Vous pouvez choisir un noeud à utiliser pour le pied du disclaimer."
 
-#: disclaimer.admin.inc:67
+#: disclaimer.admin.inc:74
 msgid "OR disclaimer footer"
 msgstr "OU pied du disclaimer"
 
-#: disclaimer.admin.inc:69
+#: disclaimer.admin.inc:76
 msgid "Optional: If you don't select a node, you can use this field for the footer of the disclaimer, under ENTER/EXIT. you can use HTML and choose input filter properly."
 msgstr ""
 "Facultatif : Si vous ne choisissez pas un noeud, vous pouvez utiliser "
 "ce champs comme pied du disclaimer. Vous pouvez utiliser du HTML et "
 "choisir le filtre d'entrée approprié."
 
-#: disclaimer.admin.inc:76
+#: disclaimer.admin.inc:83
 msgid "Disclaimer action"
 msgstr "Action du disclaimer"
 
-#: disclaimer.admin.inc:80
+#: disclaimer.admin.inc:87
 msgid "Show disclaimer on specific pages"
 msgstr "Afficher le disclaimer sur certaines pages"
 
-#: disclaimer.admin.inc:82
+#: disclaimer.admin.inc:89
 msgid "Show disclaimer on every page except the listed pages."
 msgstr ""
 "Afficher le disclaimer sur toutes les pages exceptées celles "
 "listées."
 
-#: disclaimer.admin.inc:83
+#: disclaimer.admin.inc:90
 msgid "Show disclaimer on only the listed pages."
 msgstr "Afficher le disclaimer seulement sur les pages listées."
 
-#: disclaimer.admin.inc:89
+#: disclaimer.admin.inc:96
 msgid "Disclaimer specific pages"
 msgstr "Pages spécifiques du disclaimer"
 
-#: disclaimer.admin.inc:91
+#: disclaimer.admin.inc:98
 msgid "Enter one page per line as Drupal paths. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page."
 msgstr ""
 "Saisissez une page par ligne sous la forme de chemins Drupal. Le "
@@ -102,349 +112,348 @@ msgstr ""
 "pour la page des blogs et %blog-wildcard pour chaque blog personnel. "
 "%front est la page d'accueil."
 
-#: disclaimer.admin.inc:95
+#: disclaimer.admin.inc:102
 msgid "Disclaimer enter url"
 msgstr "Url d'entrée du disclaimer"
 
-#: disclaimer.admin.inc:97
+#: disclaimer.admin.inc:104
 msgid "Set the url when press Enter on disclaimer. IF EMPTY: modal is just closed without redirection. You can use Drupal system path."
 msgstr ""
 "Indiquer une url quand Entrer est cliqué. SI VIDE : le disclaimer se "
 "fermera sans redirection. Vous pouvez utiliser le système de chemin "
 "de Drupal."
 
-#: disclaimer.admin.inc:101
+#: disclaimer.admin.inc:108
 msgid "Disclaimer exit url"
 msgstr "Url de sorti du disclaimer"
 
-#: disclaimer.admin.inc:103
+#: disclaimer.admin.inc:110
 msgid "Set the url when press Exit on disclaimer. Default is \"http://www.google.com\"."
 msgstr ""
 "Indiquer l'url quand l'option sortir du disclaimer est choisi. Par "
 "défaut \"http://www.google.com\"."
 
-#: disclaimer.admin.inc:109;113
+#: disclaimer.admin.inc:116;120
 msgid "Disclaimer action style"
 msgstr "Style d'action du disclaimer"
 
-#: disclaimer.admin.inc:116
+#: disclaimer.admin.inc:123
 msgid "Use text"
 msgstr "Utiliser du texte"
 
-#: disclaimer.admin.inc:117
+#: disclaimer.admin.inc:124
 msgid "Use images"
 msgstr "Utiliser des images"
 
-#: disclaimer.admin.inc:119
+#: disclaimer.admin.inc:126
 msgid "Select what do you want to use for \"ENTER\" or \"EXIT\" action on the disclaimer."
 msgstr ""
 "Choisissez ce que vous voulez utiliser pour les actions \"ENTRER\" ou "
 "\"SORTIR\" sur le disclaimer."
 
-#: disclaimer.admin.inc:123
+#: disclaimer.admin.inc:130
 msgid "Add Age verification form."
 msgstr "Ajouter un formulaire de vérification d'âge."
 
-#: disclaimer.admin.inc:126
+#: disclaimer.admin.inc:133
 msgid "CAUTION: if you test modal on this current settings page, age verification won't work because of preview window."
-msgstr ""
+msgstr "REMARQUE: si vous testez la fenêtre modale sur cette page, la vérification de l'age ne fonctionnera pas à cause de la fenêtre de prévisualisation."
 
-#: disclaimer.admin.inc:130
+#: disclaimer.admin.inc:137
 msgid "Select age limit"
 msgstr "Choisir une limite d'âge"
 
-#: disclaimer.admin.inc:131
+#: disclaimer.admin.inc:138
 msgid "years old"
 msgstr "ans"
 
-#: disclaimer.admin.inc:135
+#: disclaimer.admin.inc:142
 msgid "If you add age verification form, you can set age limit."
 msgstr ""
 "Si vous ajouter le formulaire de contrôle d'âge, vous pouvez "
 "indiquer une limite d'âge."
 
-#: disclaimer.admin.inc:141
+#: disclaimer.admin.inc:148
 msgid "Text settings"
 msgstr "Configuration texte"
 
-#: disclaimer.admin.inc:145
+#: disclaimer.admin.inc:152
 msgid "Disclaimer enter text"
 msgstr "Texte d'entré du disclaimer"
 
-#: disclaimer.admin.inc:147 disclaimer.module:110;116
+#: disclaimer.admin.inc:154 disclaimer.module:107;113
 msgid "ENTER"
 msgstr "ENTRER"
 
-#: disclaimer.admin.inc:148
+#: disclaimer.admin.inc:155
 msgid "Set the text for Enter action on disclaimer. Default is \"ENTER\""
 msgstr ""
 "Indiquer le texte pour l'action entrer du disclaimer. Par défaut "
 "\"ENTRER\""
 
-#: disclaimer.admin.inc:152
+#: disclaimer.admin.inc:159
 msgid "Disclaimer exit text"
 msgstr "Texte de sorti du disclaimer"
 
-#: disclaimer.admin.inc:154 disclaimer.module:111;117
+#: disclaimer.admin.inc:161 disclaimer.module:108;114
 msgid "EXIT"
 msgstr "SORTIR"
 
-#: disclaimer.admin.inc:155
+#: disclaimer.admin.inc:162
 msgid "Set the text for Exit action on disclaimer. Default is \"EXIT\""
 msgstr ""
 "Indiquer le texte pour l'action sortir du disclaimer. Par défaut "
 "\"SORTIR\""
 
-#: disclaimer.admin.inc:161
+#: disclaimer.admin.inc:168
 msgid "Image settings"
 msgstr "Configuration images"
 
-#: disclaimer.admin.inc:165
+#: disclaimer.admin.inc:172
 msgid "Disclaimer enter image name"
 msgstr "Nom de l'image entrer du disclaimer"
 
-#: disclaimer.admin.inc:168
+#: disclaimer.admin.inc:175
 msgid "Set the image name to be used for Enter action on disclaimer. Path is relative to /files/, so the image need to be in your /files directory. Default is \"enter.png\""
 msgstr ""
 "Indiquer l'image que vous souhaitez utiliser pour l'action Entrer. Le "
 "chemin est relatif au dossier /files/, donc l'image doit se trouver "
 "dans votre répertoire /files. Par défaut \"enter.png\""
 
-#: disclaimer.admin.inc:172
+#: disclaimer.admin.inc:179
 msgid "Disclaimer enter image alt/title text"
 msgstr "Balise alt/title de l'image entrer"
 
-#: disclaimer.admin.inc:175
+#: disclaimer.admin.inc:182
 msgid "Set the image alt/title text to be used for Enter action on disclaimer. Default is \"Enter\"."
 msgstr ""
 "Indiquer le contenu de la balise alt/title utilisé sur l'image "
 "Entrer. Par défaut \"Entrer\"."
 
-#: disclaimer.admin.inc:180
+#: disclaimer.admin.inc:187
 msgid "Disclaimer exit image name"
 msgstr "Nom de l'image sortir du disclaimer"
 
-#: disclaimer.admin.inc:183
+#: disclaimer.admin.inc:190
 msgid "Set the image name to be used for Exit action on disclaimer. Path is relative to /files/, so the image need to be in your /files directory. Default is \"exit.png\""
 msgstr ""
 "Indiquer l'image que vous souhaitez utiliser pour l'action Sortir. Le "
 "chemin est relatif au dossier /files/, donc l'image doit se trouver "
 "dans votre répertoire /files. Par défaut \"exit.png\""
 
-#: disclaimer.admin.inc:187
+#: disclaimer.admin.inc:194
 msgid "Disclaimer exit image alt/title text"
 msgstr "Balise alt/title de l'image sortir"
 
-#: disclaimer.admin.inc:190
+#: disclaimer.admin.inc:197
 msgid "Set the image alt/title text to be used for Exit action on disclaimer. Default is \"Enter\"."
 msgstr ""
 "Indiquer le contenu de la balise alt/title utilisé sur l'image "
 "Sortir. Par défaut \"Sortir\"."
 
-#: disclaimer.admin.inc:196
+#: disclaimer.admin.inc:203
 msgid "Disclaimer modal options"
 msgstr "Options modal du disclaimer"
 
-#: disclaimer.admin.inc:200
+#: disclaimer.admin.inc:207
 msgid "Choose modal jQuery plugin"
 msgstr "Choisir le plugin jQuery de modal"
 
-#: disclaimer.admin.inc:203
+#: disclaimer.admin.inc:210
 msgid "Select the modal script you want to use. See INSTALL.txt for instalation and compare."
-msgstr "Choisir le script de modal que vous souhaitez utiliser. Voir INSTALL.txt pour l'instalation et comparaison."
+msgstr ""
+"Choisir le script de modal que vous souhaitez utiliser. Voir "
+"INSTALL.txt pour l'instalation et comparaison."
 
-#: disclaimer.admin.inc:209
+#: disclaimer.admin.inc:216
 msgid "Disclaimer nyroModal options"
 msgstr "Option nyroModal du disclaimer"
 
-#: disclaimer.admin.inc:210;263
+#: disclaimer.admin.inc:217;270
 msgid "Visit !url for settings explanation."
 msgstr "Visiter !url pour le détail des options."
 
-#: disclaimer.admin.inc:214
+#: disclaimer.admin.inc:221
 msgid "Minimum width"
-msgstr "Largeur minimale"
+msgstr "Largeur minimum"
 
-#: disclaimer.admin.inc:215;224;233
+#: disclaimer.admin.inc:222;231;240
 msgid "px"
 msgstr "px"
 
-#: disclaimer.admin.inc:219
+#: disclaimer.admin.inc:226
 msgid "The minimum width of the lightbox containing the disclaimer. Default 400px."
 msgstr ""
 "La largeur minimale de la fenêtre contenant le disclaimer. Par "
 "défaut 400px."
 
-#: disclaimer.admin.inc:223
+#: disclaimer.admin.inc:230
 msgid "Minimum height"
-msgstr "Hauteur minimale"
+msgstr "Hauteur minimum"
 
-#: disclaimer.admin.inc:228
+#: disclaimer.admin.inc:235
 msgid "The minimum height of the lightbox containing the disclaimer. Default 300px."
 msgstr ""
 "La hauteur minimale de la fenêtre contenant le disclaimer. Par "
 "défaut 300px."
 
-#: disclaimer.admin.inc:232
+#: disclaimer.admin.inc:239
 msgid "Padding"
 msgstr "Marges externes"
 
-#: disclaimer.admin.inc:237
+#: disclaimer.admin.inc:244
 msgid "The padding of the lightbox containing the disclaimer. Default 20px."
 msgstr ""
 "Les marges externes de la fenêtre contenant le disclaimer. Par "
 "défaut 20px."
 
-#: disclaimer.admin.inc:241
+#: disclaimer.admin.inc:248
 msgid "Background color"
 msgstr "Couleur de fond"
 
-#: disclaimer.admin.inc:246
+#: disclaimer.admin.inc:253
 msgid "The hex color of the lightbox background. Default #000000."
 msgstr ""
 "La couleur héxadécimale de fond derrière la fenêtre. Par défaut "
 "#000000."
 
-#: disclaimer.admin.inc:250
+#: disclaimer.admin.inc:257
 msgid "Debug mode"
 msgstr "Mode de debuggage"
 
-#: disclaimer.admin.inc:253
+#: disclaimer.admin.inc:260
 msgid "False"
 msgstr "Faux"
 
-#: disclaimer.admin.inc:254
+#: disclaimer.admin.inc:261
 msgid "True"
 msgstr "Vrai"
 
-#: disclaimer.admin.inc:256
+#: disclaimer.admin.inc:263
 msgid "Debug mode for the NyroModal."
 msgstr "Mode de debuggage pour NyroModal."
 
-#: disclaimer.admin.inc:262
+#: disclaimer.admin.inc:269
 msgid "Disclaimer jqModal options"
 msgstr "Options jQmodal du disclaimer"
 
-#: disclaimer.admin.inc:267
+#: disclaimer.admin.inc:274
 msgid "Background overlay"
 msgstr "Overlay du fond"
 
+#: disclaimer.admin.inc:275
+msgid "%"
+msgstr "%"
 
-#: disclaimer.admin.inc:272
+#: disclaimer.admin.inc:279
 msgid "The background overlay of the modal. Default 90%."
 msgstr "L'overlay de fond de la modal. Défault 90%."
 
-#: disclaimer.admin.inc:278
+#: disclaimer.admin.inc:285
 msgid "Disclaimer advanced options"
 msgstr "Options avancées du disclaimer"
 
-#: disclaimer.admin.inc:282
+#: disclaimer.admin.inc:289
 msgid "Show disclaimer when logged user came back."
 msgstr "Montrer le disclaimer quand un utilisateur authentifié reviens."
 
-#: disclaimer.admin.inc:284
+#: disclaimer.admin.inc:291
 msgid "Show disclaimer for auto-login user on a new session. Default is yes. Note: this option is complementary to \"bypass disclaimer\" access."
 msgstr ""
 "Montrer le disclaimer pour les utilisateurs authentifiés qui "
 "reviennent sur une nouvelle session. Par défaut oui. Note : cette "
 "option est complémentaire des droits \"outrepasser le disclaimer\""
 
-#: disclaimer.admin.inc:288
+#: disclaimer.admin.inc:295
 msgid "Javascript"
 msgstr "Javascript"
 
-#: disclaimer.admin.inc:291
+#: disclaimer.admin.inc:298
 msgid "Header"
 msgstr "Entête"
 
-#: disclaimer.admin.inc:292
+#: disclaimer.admin.inc:299
 msgid "Footer"
 msgstr "Pied de page"
 
-#: disclaimer.admin.inc:294
+#: disclaimer.admin.inc:301
 msgid "Where the javascript is loaded. Header is default, but could be useful to load on footer for conflict with other js. Note: this is only for disclaimer javascript and not jquery.nyroModal.js"
 msgstr ""
 "Ou charger le javascript. Par défaut dans le titre, mais peut servir "
 "pour éviter les conflits. Note : cela affecte le script du "
 "disclaimer, pas jquery.nyroModal.js"
 
-#: disclaimer.admin.inc:300
+#: disclaimer.admin.inc:307
 msgid "Disclaimer cookie options"
 msgstr "Options du cookie du disclaimer"
 
-#: disclaimer.admin.inc:301
+#: disclaimer.admin.inc:308
 msgid "EXPERIMENTAL: Use with CAUTION."
 msgstr "EXPERIMENTALE : Utiliser avec PRECAUTIONS."
 
-#: disclaimer.admin.inc:305
+#: disclaimer.admin.inc:312
 msgid "Disclaimer cookie name"
 msgstr "Nom du cookie du disclaimer"
 
-#: disclaimer.admin.inc:307
+#: disclaimer.admin.inc:314
 msgid "Set the cookie name. Default is \"disclaimerShow\"."
 msgstr "Indiquer le nom du cookie. Par défaut \"disclaimerShow\"."
 
-#: disclaimer.admin.inc:312
+#: disclaimer.admin.inc:319
 msgid "Disclaimer cookie path"
 msgstr "Chemin du cookie"
 
-#: disclaimer.admin.inc:314
+#: disclaimer.admin.inc:321
 msgid "Set the cookie path. Default is \"/\" (recommended for access on all your site). Empty get server path."
 msgstr ""
 "Indiquer le chemin du cookie. Par défaut \"/\" (recommandé pour un "
 "accès sur tout le site). Si vide chemin server."
 
-#: disclaimer.admin.inc:318
+#: disclaimer.admin.inc:325
 msgid "Disclaimer cookie domain"
 msgstr "Domaine du cookie"
 
-#: disclaimer.admin.inc:320
+#: disclaimer.admin.inc:327
 msgid "Set the cookie domain. Empty set default server domain."
 msgstr "Indiquer le domaine du cookie. Si vide prend le domaine du serveur."
 
-#: disclaimer.admin.inc:345
+#: disclaimer.admin.inc:352
 msgid "You must enter a numeric padding."
 msgstr "Vous devez entrer une marge numérique."
 
-#: disclaimer.admin.inc:348
+#: disclaimer.admin.inc:355
 msgid "You must enter a bgcolor."
 msgstr "Vous devez saisir une couleur de fond."
 
-#: disclaimer.admin.inc:351
+#: disclaimer.admin.inc:358
 msgid "You must enter a width greater than 0 pixels."
 msgstr "Vous devez entrer une largeur superieur à 0 pixels."
 
-#: disclaimer.admin.inc:354
+#: disclaimer.admin.inc:361
 msgid "You must enter a height greater than 0 pixels."
 msgstr "Vous devez entrer une hauteur superieur à 0 pixels."
 
-#: disclaimer.admin.inc:357
+#: disclaimer.admin.inc:364
 msgid "You must enter an age greater than 0."
 msgstr "Vous devez saisir un âge limite plus grand que 0."
 
-#: disclaimer.admin.inc:360
+#: disclaimer.admin.inc:367
 msgid "You must enter a numeric overlay."
-msgstr ""
+msgstr "Vous devez saisie une valeur d'overlay numérique."
 
-#: disclaimer.module:63
-msgid "Can't find any modal script. Please see INSTALL.txt."
-msgstr ""
-"Aucun script modal pour le module disclaimer ne peut être trouvé. Merci "
-"de suivre les instructions de INSTALL.txt."
-
-#: disclaimer.module:258
+#: disclaimer.module:254
 msgid "Date of Birth"
 msgstr "Date de naissance"
 
-#: disclaimer.module:259
+#: disclaimer.module:255
 msgid "You must be at least @age years old to visit @site."
 msgstr "Vous devez avoir au minimum @age ans pour visiter @site."
 
-#: disclaimer.module:74
+#: disclaimer.module:71
 msgid "administer disclaimer settings"
 msgstr "configurer le disclaimer"
 
-#: disclaimer.module:74
+#: disclaimer.module:71
 msgid "bypass disclaimer"
 msgstr "outrepasser le disclaimer"
 
@@ -456,31 +465,27 @@ msgstr ""
 msgid "Administer Disclaimer settings."
 msgstr "Configurer les options du disclaimer"
 
-#: disclaimer.module:0
-msgid "disclaimer"
-msgstr "disclaimer"
-
 #: disclaimer.install:12
 msgid "To configure your disclaimer. Go to the <a href=\"!url\">disclaimer setting page</a>."
 msgstr ""
 "Pour configurer votre disclaimer. Rendez-vous sur <a href=\"!url\">la "
 "page de configuration du disclaimer</a>."
 
-#: disclaimer.install:66
+#: disclaimer.install:73
 msgid "Disclaimer uninstall properly."
 msgstr "Disclaimer désinstallé proprement."
 
-#: (duplicate) disclaimer.install:26 
+#: (duplicate) disclaimer.install:27 
 msgid "Disclaimer module"
 msgstr ""
 
-#: (duplicate) disclaimer.install:27 
-msgid "Please create \"nyromodal\" folder in disclaimer module then copy and extract the nyroModal content with subfolders at %mod (no need php files). Rename the script you want to use (ex : jquery.nyroModal-1.4.2.min.js -> jquery.nyroModal.js - packed script is recommended).<br/>You can get the nyroModal 1.4.2+ code at !url"
+#: (duplicate) disclaimer.install:28 
+msgid "Please create \"nyroModal\" and/or \"jqModal\" folder in disclaimer module then follow INSTALL.txt instructions"
 msgstr ""
 
-#: (duplicate) disclaimer.install:29 
-msgid "Copy and rename jquery.nyroModal.js"
-msgstr "Copier et renomer jquery.nyroModal.js"
+#: (duplicate) disclaimer.install:30 
+msgid "Copy nyroModal or jqModal."
+msgstr ""
 
 #: disclaimer.info:0
 msgid "A nice lightbox disclaimer."

@@ -20,10 +20,10 @@ Requirements
 
 This module require at least version 6.x of Drupal.
 This module require 
-NyroModal jquery plugin 1.4.2+ from
+NyroModal jquery plugin 1.6.1+ from
 http://plugins.jquery.com/project/nyroModal
 - AND/OR -
-jqModal jquery plugin 2008.06.22-r12+ from
+jqModal jquery plugin 2009.03.01 +r14+ from
 http://plugins.jquery.com/project/jqModal
 (up to date) http://dev.iceburg.net/jquery/jqModal/
 
@@ -36,7 +36,7 @@ Installation
    -- you can choose Modal script you will set --
    -- if you choose nyroModal --
 
-2. Download NyroModal archive (version 1.4.2+) at 
+2. Download NyroModal archive (version 1.6.1+) at 
    http://plugins.jquery.com/project/nyroModal
 
 3. Create nyroModal folder in disclaimer module
@@ -57,7 +57,7 @@ Installation
 
    -- if you choose jqModal --
 
-7. Download jqModal script (version 2008.06.22-r12+) at 
+7. Download jqModal script (version 2009.03.01 +r14+) at 
    http://plugins.jquery.com/project/jqModal
    (up to date) http://dev.iceburg.net/jquery/jqModal/
    Download jqModal css sample at

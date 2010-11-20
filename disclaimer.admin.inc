@@ -94,7 +94,7 @@ function disclaimer_admin_settings() {
   $form['disclaimer_action']['disclaimer_pages'] = array(
       '#type' => 'textarea',
       '#title' => t('Disclaimer specific pages'),
-      '#default_value' => variable_get('disclaimer_pages', ''),
+      '#default_value' => variable_get('disclaimer_pages', "admin/*\nuser"),
       '#description' => t("Enter one page per line as Drupal paths. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>')),
   );
   $form['disclaimer_action']['disclaimer_enter_url'] = array(
