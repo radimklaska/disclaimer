@@ -9,7 +9,7 @@
  * Create tables on install
  */
 function disclaimer_install() {
-  drupal_set_message(t('To configure your disclaimer. Go to the <a href="!url">disclaimer setting page</a>.', array('!url' => 'admin/settings/disclaimer')));
+  drupal_set_message(t('To configure your disclaimer. Go to the <a href="!url">disclaimer setting page</a>.', array('!url' => base_path().'admin/settings/disclaimer')));
 }
 /**
  * Implementation of hook_requirements().
@@ -38,38 +38,5 @@ function disclaimer_requirements($phase) {
  */
 function disclaimer_uninstall() {
   // Delete all global variables
-  variable_del('disclaimer_width');
-  variable_del('disclaimer_height');
-  variable_del('disclaimer_node');
-  variable_del('disclaimer_content');
-  variable_del('disclaimer_content_format');
-  variable_del('disclaimer_node_footer');
-  variable_del('disclaimer_content_footer');
-  variable_del('disclaimer_content_footer_format');
-  variable_del('disclaimer_visibility');
-  variable_del('disclaimer_pages');
-  variable_del('disclaimer_enter_url');
-  variable_del('disclaimer_exit_url');
-  variable_del('disclaimer_action_type');
-  variable_del('disclaimer_age_form');
-  variable_del('disclaimer_age_limit');
-  variable_del('disclaimer_enter_txt');
-  variable_del('disclaimer_exit_txt');
-  variable_del('disclaimer_enter_img');
-  variable_del('disclaimer_enter_img_alt');
-  variable_del('disclaimer_exit_img');
-  variable_del('disclaimer_exit_img_alt');
-  variable_del('disclaimer_modal');
-  variable_del('disclaimer_width');
-  variable_del('disclaimer_height');
-  variable_del('disclaimer_padding');
-  variable_del('disclaimer_bgcolor');
-  variable_del('disclaimer_debug');
-  variable_del('disclaimer_jqmodal_overlay');
-  variable_del('disclaimer_logged');
-  variable_del('disclaimer_location_js');
-  variable_del('disclaimer_cookie_name');
-  variable_del('disclaimer_cookie_path');
-  variable_del('disclaimer_cookie_domain');
-  drupal_set_message(t('Disclaimer uninstall properly.'));
+  db_query("DELETE FROM {variable} WHERE name LIKE 'disclaimer_%%'");
 }

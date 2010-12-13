@@ -31,7 +31,7 @@ function disclaimer_menu() {
       'page callback' => 'drupal_get_form',
       'page arguments' => array('disclaimer_admin_settings'),
       'access callback' => 'user_access',
-      'accesss arguments' => array('administer disclaimer settings'),
+      'access arguments' => array('administer disclaimer settings'),
       'file' => 'disclaimer.admin.inc',
     );
 
@@ -205,8 +205,7 @@ function _disclaimer_get_js() {
   }
   $js .= '((secure==true) ? "; secure" : "");}'."\n";
 
-  $js .= 'if (ReadCookie("'. variable_get('disclaimer_cookie_name', 'disclaimerShow') .'") == null) {';
-  $js .= '$(document).ready(function(){';
+  $js .= 'if (ReadCookie("'. variable_get('disclaimer_cookie_name', 'disclaimerShow') .'") == null) {';  $js .= '$(document).ready(function(){';
   if ($modal == 'nyroModal') {
     $js .= '$(\'#disclaimer\').nyroModalManual({modal:true, minWidth:'. $width .', minHeight:'. $height .', padding:'. $padding .', debug:'. $debug .', bgcolor:\'#'. $bgcolor .'\'});';
   }
@@ -224,7 +223,7 @@ function _disclaimer_get_js() {
  */
 function _disclaimer_visibility() {
   $visibility = variable_get('disclaimer_visibility', 0);
-  $pages = variable_get('disclaimer_pages', '');
+  $pages = variable_get('disclaimer_pages', "admin/*\nuser");
 
   if ($pages) {
     if ($visibility < 2) {
@@ -257,3 +256,4 @@ function disclaimer_age_form() {
   );
   return $form;
 }
+

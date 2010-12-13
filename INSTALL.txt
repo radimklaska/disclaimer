@@ -1,4 +1,4 @@
-/* $Id
+/* $Id$
 *******************************************************************************************
 Warning
 -------
@@ -25,36 +25,7 @@ http://plugins.jquery.com/project/nyroModal
 - AND/OR -
 jqModal jquery plugin 2008.06.22-r12+ from
 http://plugins.jquery.com/project/jqModal
-
-jQuery modal plugin
--------------------
-
-Question: Why can we choose 2 jQuery plugin ? it's a little bit complicated ?
-Answer:
-* First: because i like let people make their own choice !
-* Second: because i first start this module with nyroModal, and found jqModal only recently.
-* Third: there is a lot a jQuery plugin modal, so be happy i give only two choice ! ;)
-
-Here is my comparison to help you to get the one you need:
-
-NyroModal :
-
-* Very nice !
-* Show, loading and hide style
-* Some simple style options
-* Full css customization
-* Big script ! packed is 18,10 Ko !!
-
-jqModal :
-
-* Very very light ! 3,32 Ko !!
-* No loader, no hide style (but 
-* No style options, only overlay
-* Full css customization
-
-So, here is my advice : 
-If you got a lot of js on your site, and don't bother too much about style, get jqModal.
-If you think you got not too much on your site and found nyroModal so nice and cool, get it !
+(up to date) http://dev.iceburg.net/jquery/jqModal/
 
 Installation
 ------------
@@ -62,6 +33,7 @@ Installation
 1. Copy the folder named 'disclaimer' and its contents to the modules directory
    of your Drupal installation (for example 'sites/all/modules/').
 
+   -- you can choose Modal script you will set --
    -- if you choose nyroModal --
 
 2. Download NyroModal archive (version 1.4.2+) at 
@@ -87,20 +59,26 @@ Installation
 
 7. Download jqModal script (version 2008.06.22-r12+) at 
    http://plugins.jquery.com/project/jqModal
-
-8. Download jqModal css sample at
+   (up to date) http://dev.iceburg.net/jquery/jqModal/
+   Download jqModal css sample at
    http://dev.iceburg.net/jquery/jqModal/
 
 8. Create jqModal folder in disclaimer module
    sites/all/modules/disclaimer/jqModal
 
-9. Copy both js and css files in this folder.
+9. Copy both js AND css files in this folder.
+   so directory look likes:
+    disclaimer/jqModal/jqModal.js
+    disclaimer/jqModal/jqModal.css
 
-  -- whatever your choice --
+  -- then --
 
-10. In order to get disclaimer with customizes regions (no sidebar, etc...), copy 
-   page-disclaimer.tpl.php file from disclaimer module to your theme directory.
-   Edit to your need.
+10. In order to get disclaimer with customizes regions (no sidebar, etc...), you 
+  can set-up a tpl file. The better way is to copy your page.tpl.php file from
+  your theme directory, rename it page-disclaimer.tpl.php and edit to your need
+  to delete sidebar zones. 
+  There is a sample page-disclaimer.tpl.php file in disclaimer module made from
+  GARLAND theme. It can produce error on other themes.
 
 11. Go to 'admin/build/modules' and enable disclaimer.
 

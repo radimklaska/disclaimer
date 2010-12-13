@@ -14,7 +14,7 @@ function disclaimer_admin_settings() {
   $disclaimer = _disclaimer_get_content();
   $width = variable_get('disclaimer_width', 400);
   $height = variable_get('disclaimer_height', 300);
-  $node_query = db_query('SELECT n.nid FROM {node} n WHERE nid > 0');
+  $node_query = db_query('SELECT n.nid FROM {node} n WHERE nid > %d', 0);
   $options = array(t('- None, use content form below -'));
   while ($row = db_fetch_object($node_query)) {
     $options[$row->nid] = drupal_get_path_alias('node/'. $row->nid);
@@ -23,7 +23,7 @@ function disclaimer_admin_settings() {
   if (file_exists($path .'/nyroModal/js/jquery.nyroModal.js')) {
     $optionsmodal['nyroModal'] = 'nyroModal';
   }
-  if (file_exists($path .'/jqModal/jqModal.js')) {
+  if (file_exists($path . '/jqModal/jqModal.js') && file_exists($path . '/jqModal/jqModal.css')) {
     $optionsmodal['jqModal'] = 'jqModal';
   }
   if (empty($optionsmodal)) {
