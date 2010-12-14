@@ -9,10 +9,10 @@
  * Create tables on install
  */
 function disclaimer_install() {
-  drupal_set_message(t('To configure your disclaimer. Go to the <a href="!url">disclaimer setting page</a>.', array('!url' => base_path().'admin/settings/disclaimer')));
+  drupal_set_message(t('To configure your disclaimer. Go to the <a href="!url">disclaimer setting page</a>.', array('!url' => base_path() . 'admin/config/disclaimer')));
 }
 /**
- * Implementation of hook_requirements().
+ * Implements hook_requirements().
  */
 function disclaimer_requirements($phase) {
   $requirements = array();
@@ -20,8 +20,8 @@ function disclaimer_requirements($phase) {
   switch ($phase) {
     case 'install':
     case 'runtime':
-      $path = drupal_get_path('module', 'disclaimer') .'/nyroModal/js/jquery.nyroModal.js';
-      $path2 = drupal_get_path('module', 'disclaimer') .'/jqModal/jqModal.js';
+      $path = drupal_get_path('module', 'disclaimer') . '/nyroModal/js/jquery.nyroModal.js';
+      $path2 = drupal_get_path('module', 'disclaimer') . '/jqModal/jqModal.js';
       if (!file_exists($path) && !file_exists($path2)) {
         $requirements['modal'] = array(
           'title' => $t('Disclaimer module'),
@@ -34,7 +34,7 @@ function disclaimer_requirements($phase) {
   return $requirements;
 }
 /**
- * Implementation of hook_uninstall().
+ * Implements hook_uninstall().
  */
 function disclaimer_uninstall() {
   // Delete all global variables

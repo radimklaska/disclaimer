@@ -11,16 +11,17 @@
  */
 function disclaimer_admin_settings() {
   global $user;
-  $disclaimer = _disclaimer_get_content();
+  // preview disclaimer with no js
+  $disclaimer = disclaimer_get_content(FALSE);
   $width = variable_get('disclaimer_width', 400);
   $height = variable_get('disclaimer_height', 300);
-  $node_query = db_query('SELECT n.nid FROM {node} n WHERE nid > %d', 0);
+  $node_query = db_query('SELECT n.nid, n.title FROM {node} n WHERE nid > :nid', array(':nid' => 0));
   $options = array(t('- None, use content form below -'));
-  while ($row = db_fetch_object($node_query)) {
-    $options[$row->nid] = drupal_get_path_alias('node/'. $row->nid);
+  foreach ($node_query as $row) {
+    $options[$row->nid] = $row->title . ' (' . drupal_get_path_alias('node/' . $row->nid) . ')';
   }
   $path = drupal_get_path('module', 'disclaimer');
-  if (file_exists($path .'/nyroModal/js/jquery.nyroModal.js')) {
+  if (file_exists($path . '/nyroModal/js/jquery.nyroModal.js')) {
     $optionsmodal['nyroModal'] = 'nyroModal';
   }
   if (file_exists($path . '/jqModal/jqModal.js') && file_exists($path . '/jqModal/jqModal.css')) {
@@ -40,49 +41,65 @@ function disclaimer_admin_settings() {
   );
   $form['disclaimer_preview']['content'] = array(
     '#type' => 'markup',
-    '#value' => $disclaimer,
+    '#markup' => $disclaimer,
   );
-  $form['disclaimer_html'] = array(
+  $form['content'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
     '#title' => t('Disclaimer content'),
   );
-  $form['disclaimer_html']['disclaimer_node'] = array(
+  $form['content']['disclaimer_node'] = array(
     '#type' => 'select',
     '#title' => t('Node to use for disclaimer content'),
     '#options' => $options,
     '#default_value' => variable_get('disclaimer_node', 0),
     '#description' => t('You can select a node to use for the body of the disclaimer.'),
   );
-  $form['disclaimer_html']['disclaimer_content'] = array(
-    '#type' => 'textarea',
-    '#title' => t('OR disclaimer content'),
-    '#default_value' => variable_get('disclaimer_content', ''),
+  $form['content']['container'] = array(
+    '#type' => 'container',
+    '#states' => array(
+      'visible' => array(
+        ':input[name="disclaimer_node"]' => array('value' => '0'),
+      ),
+    ),
+  );
+  $content = variable_get('disclaimer_content', array());
+  $form['content']['container']['disclaimer_content'] = array(
+    '#type' => 'text_format',
+    '#default_value' => $content['value'],
+    '#format' => isset($content['format']) ? $content['format'] : NULL,
     '#description' => t('Optional: If you don\'t select a node, you can use this field for the body of the disclaimer. You can use HTML and choose input filter properly.'),
   );
-  $form['disclaimer_html']['disclaimer_input_format'] = filter_form(variable_get('disclaimer_content_format', 1), NULL, array('disclaimer_input_format'));
-  $form['disclaimer_html']['disclaimer_node_footer'] = array(
+  $form['content']['disclaimer_node_footer'] = array(
     '#type' => 'select',
     '#title' => t('Node to use for disclaimer footer'),
     '#options' => $options,
     '#default_value' => variable_get('disclaimer_node_footer', 0),
     '#description' => t('You can select a node to use for the footer of the disclaimer.'),
   );
-  $form['disclaimer_html']['disclaimer_content_footer'] = array(
-    '#type' => 'textarea',
-    '#title' => t('OR disclaimer footer'),
-    '#default_value' => variable_get('disclaimer_content_footer', ''),
-    '#description' => t('Optional: If you don\'t select a node, you can use this field for the footer of the disclaimer, under ENTER/EXIT. you can use HTML and choose input filter properly.'),
+  $form['content']['container-footer'] = array(
+    '#type' => 'container',
+    '#states' => array(
+      'visible' => array(
+        ':input[name="disclaimer_node_footer"]' => array('value' => '0'),
+      ),
+    ),
   );
-  $form['disclaimer_html']['disclaimer_footer_input_format'] = filter_form(variable_get('disclaimer_content_footer_format', 1), NULL, array('disclaimer_footer_input_format'));
-  $form['disclaimer_action'] = array(
+  $content = variable_get('disclaimer_content_footer', array());
+  $form['content']['container-footer']['disclaimer_content_footer'] = array(
+    '#type' => 'text_format',
+    '#default_value' => $content['value'],
+    '#description' => t('Optional: If you don\'t select a node, you can use this field for the footer of the disclaimer, under ENTER/EXIT. you can use HTML and choose input filter properly.'),
+    '#format' => isset($content['format']) ? $content['format'] : NULL,
+  );
+  $form['action'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
     '#title' => t('Disclaimer action'),
   );
-  $form['disclaimer_action']['disclaimer_visibility'] = array(
+  $form['action']['disclaimer_visibility'] = array(
       '#type' => 'radios',
       '#title' => t('Show disclaimer on specific pages'),
       '#options' => array(
@@ -91,31 +108,52 @@ function disclaimer_admin_settings() {
       ),
       '#default_value' => variable_get('disclaimer_visibility', 0),
   );
-  $form['disclaimer_action']['disclaimer_pages'] = array(
+  $form['action']['disclaimer_pages'] = array(
       '#type' => 'textarea',
       '#title' => t('Disclaimer specific pages'),
       '#default_value' => variable_get('disclaimer_pages', ''),
       '#description' => t("Enter one page per line as Drupal paths. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>')),
   );
-  $form['disclaimer_action']['disclaimer_enter_url'] = array(
+  $form['action']['disclaimer_enter_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Disclaimer enter url'),
     '#default_value' => variable_get('disclaimer_enter_url', ''),
     '#description' => t('Set the url when press Enter on disclaimer. IF EMPTY: modal is just closed without redirection. You can use Drupal system path.'),
   );
-  $form['disclaimer_action']['disclaimer_exit_url'] = array(
+  $form['action']['disclaimer_exit_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Disclaimer exit url'),
     '#default_value' => variable_get('disclaimer_exit_url', 'http://www.google.com'),
     '#description' => t('Set the url when press Exit on disclaimer. Default is "http://www.google.com".'),
   );
-  $form['disclaimer_action_style'] = array(
+  $form['action']['disclaimer_age_form'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Add Age verification form.'),
+    '#default_value' => variable_get('disclaimer_age_form', 0),
+    '#return_value' => 1,
+    '#description' => t('CAUTION: if you test modal on this current settings page, age verification won\'t work because of preview window.'),
+  );
+  $form['action']['disclaimer_age_limit'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Select age limit'),
+    '#field_suffix' => t('years old'),
+    '#default_value' => variable_get('disclaimer_age_limit', 18),
+    '#size' => 3,
+    '#maxlength' => 3,
+    '#description' => t('If you add age verification form, you can set age limit.'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="disclaimer_age_form"]' => array('checked' => TRUE),
+      ),
+    ),
+  );
+  $form['style'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
     '#title' => t('Disclaimer action style'),
   );
-  $form['disclaimer_action_style']['disclaimer_action']['disclaimer_action_type'] = array(
+  $form['style']['action']['disclaimer_action_type'] = array(
     '#type' => 'select',
     '#title' => t('Disclaimer action style'),
     '#default_value' => variable_get('disclaimer_action_type', 'text'),
@@ -125,77 +163,65 @@ function disclaimer_admin_settings() {
     ),
     '#description' => t('Select what do you want to use for "ENTER" or "EXIT" action on the disclaimer.'),
   );
-  $form['disclaimer_action']['disclaimer_age_form'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Add Age verification form.'),
-    '#default_value' => variable_get('disclaimer_age_form', 0),
-    '#return_value' => 1,
-    '#description' => t('CAUTION: if you test modal on this current settings page, age verification won\'t work because of preview window.'),
+  $form['style']['action']['text'] = array(
+    '#type' => 'container',
+    '#states' => array(
+      'visible' => array(
+        ':input[name="disclaimer_action_type"]' => array('value' => 'text'),
+      ),
+    ),
   );
-  $form['disclaimer_action']['disclaimer_age_limit'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Select age limit'),
-    '#field_suffix' => t('years old'),
-    '#default_value' => variable_get('disclaimer_age_limit', 18),
-    '#size' => 3,
-    '#maxlength' => 3,
-    '#description' => t('If you add age verification form, you can set age limit.'),
-  );
-  $form['disclaimer_action_style']['disclaimer_action']['text'] = array(
-    '#type' => 'fieldset',
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#title' => t('Text settings'),
-  );
-  $form['disclaimer_action_style']['disclaimer_action']['text']['disclaimer_enter_txt'] = array(
+  $form['style']['action']['text']['disclaimer_enter_txt'] = array(
     '#type' => 'textfield',
     '#title' => t('Disclaimer enter text'),
     '#size' => 20,
     '#default_value' => variable_get('disclaimer_enter_txt', t('ENTER')),
     '#description' => t('Set the text for Enter action on disclaimer. Default is "ENTER"'),
   );
-  $form['disclaimer_action_style']['disclaimer_action']['text']['disclaimer_exit_txt'] = array(
+  $form['style']['action']['text']['disclaimer_exit_txt'] = array(
     '#type' => 'textfield',
     '#title' => t('Disclaimer exit text'),
     '#size' => 20,
     '#default_value' => variable_get('disclaimer_exit_txt', t('EXIT')),
     '#description' => t('Set the text for Exit action on disclaimer. Default is "EXIT"'),
   );
-  $form['disclaimer_action_style']['disclaimer_action']['img'] = array(
-    '#type' => 'fieldset',
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#title' => t('Image settings'),
+  $form['style']['action']['img'] = array(
+    '#type' => 'container',
+    '#states' => array(
+      'visible' => array(
+        ':input[name="disclaimer_action_type"]' => array('value' => 'image'),
+      ),
+    ),
   );
-  $form['disclaimer_action_style']['disclaimer_action']['img']['disclaimer_enter_img'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Disclaimer enter image name'),
-    '#size' => 20,
-    '#default_value' => variable_get('disclaimer_enter_img', 'enter.png'),
-    '#description' => t('Set the image name to be used for Enter action on disclaimer. Path is relative to /files/, so the image need to be in your /files directory. Default is "enter.png"'),
+  // Use the #managed_file FAPI element to upload an image file.
+  $form['style']['action']['img']['disclaimer_enter_img'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('Disclaimer enter image'),
+    '#description' => t('Set the image to be used for !action action on disclaimer.', array('!action' => t('Enter'))),
+    '#default_value' => variable_get('disclaimer_enter_img', ''),
+    '#upload_location' => 'public://images_disclaimer/',
   );
-  $form['disclaimer_action_style']['disclaimer_action']['img']['disclaimer_enter_img_alt'] = array(
+  $form['style']['action']['img']['disclaimer_enter_img_alt'] = array(
     '#type' => 'textfield',
     '#title' => t('Disclaimer enter image alt/title text'),
     '#size' => 20,
     '#default_value' => variable_get('disclaimer_enter_img_alt', 'ENTER'),
     '#description' => t('Set the image alt/title text to be used for Enter action on disclaimer. Default is "Enter".'),
   );
-
-  $form['disclaimer_action_style']['disclaimer_action']['img']['disclaimer_exit_img'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Disclaimer exit image name'),
-    '#size' => 20,
-    '#default_value' => variable_get('disclaimer_exit_img', 'exit.png'),
-    '#description' => t('Set the image name to be used for Exit action on disclaimer. Path is relative to /files/, so the image need to be in your /files directory. Default is "exit.png"'),
+  $form['style']['action']['img']['disclaimer_exit_img'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('Disclaimer exit image'),
+    '#description' => t('Set the image to be used for !action action on disclaimer.', array('!action' => t('Exit'))),
+    '#default_value' => variable_get('disclaimer_exit_img', ''),
+    '#upload_location' => 'public://images_disclaimer/',
   );
-  $form['disclaimer_action_style']['disclaimer_action']['img']['disclaimer_exit_img_alt'] = array(
+  $form['style']['action']['img']['disclaimer_exit_img_alt'] = array(
     '#type' => 'textfield',
     '#title' => t('Disclaimer exit image alt/title text'),
     '#size' => 20,
     '#default_value' => variable_get('disclaimer_exit_img_alt', 'EXIT'),
     '#description' => t('Set the image alt/title text to be used for Exit action on disclaimer. Default is "Enter".'),
-  );
+  ); 
   $form['modal'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
@@ -215,6 +241,11 @@ function disclaimer_admin_settings() {
     '#collapsed' => TRUE,
     '#title' => t('Disclaimer nyroModal options'),
     '#description' => t('Visit !url for settings explanation.', array('!url' => l('http://nyromodal.nyrodev.com/', 'http://nyromodal.nyrodev.com/', array('html' => TRUE)))),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="disclaimer_modal"]' => array('value' => 'nyroModal'),
+      ),
+    ),
   );
   $form['modal']['disclaimer_options_nyromodal']['disclaimer_width'] = array(
     '#type' => 'textfield',
@@ -268,6 +299,11 @@ function disclaimer_admin_settings() {
     '#collapsed' => TRUE,
     '#title' => t('Disclaimer jqModal options'),
     '#description' => t('Visit !url for settings explanation.', array('!url' => l('http://dev.iceburg.net/jquery/jqModal/', 'http://dev.iceburg.net/jquery/jqModal/', array('html' => TRUE)))),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="disclaimer_modal"]' => array('value' => 'jqModal'),
+      ),
+    ),
   );
   $form['modal']['disclaimer_options_jqmodal']['disclaimer_jqmodal_overlay'] = array(
     '#type' => 'textfield',
@@ -289,16 +325,6 @@ function disclaimer_admin_settings() {
     '#title' => t('Show disclaimer when logged user came back.'),
     '#default_value' => variable_get('disclaimer_logged', 1),
     '#description' => t('Show disclaimer for auto-login user on a new session. Default is yes. Note: this option is complementary to "bypass disclaimer" access.'),
-  );
-  $form['disclaimer_advanced']['disclaimer_location_js'] = array(
-    '#type' => 'select',
-    '#title' => t('Javascript'),
-    '#default_value' => variable_get('disclaimer_location_js', 'header'),
-    '#options' => array(
-      'header' => t('Header'),
-      'footer' => t('Footer'),
-    ),
-    '#description' => t('Where the javascript is loaded. Header is default, but could be useful to load on footer for conflict with other js. Note: this is only for disclaimer javascript and not jquery.nyroModal.js'),
   );
   $form['disclaimer_advanced']['cookie'] = array(
     '#type' => 'fieldset',
@@ -326,7 +352,12 @@ function disclaimer_admin_settings() {
     '#default_value' => variable_get('disclaimer_cookie_domain', ''),
     '#description' => t('Set the cookie domain. Empty set default server domain.'),
   );
-    return system_settings_form($form);
+  //return system_settings_form($form);
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save configuration'),
+  );
+  return $form;
 }
 
 /**
@@ -335,6 +366,16 @@ function disclaimer_admin_settings() {
  * Ensure that numeric value are numeric... and set input format
  */
 function disclaimer_admin_settings_validate($form, &$form_state) {
+  if ($form_state['values']['disclaimer_action_type'] == 'image') {
+    if (!isset($form_state['values']['disclaimer_enter_img']) || $form_state['values']['disclaimer_enter_img'] == 0) {
+      form_set_error('disclaimer_enter_img', t('Please select an image to upload.'));
+    }
+    if (!isset($form_state['values']['disclaimer_exit_img']) || $form_state['values']['disclaimer_exit_img'] == 0) {
+      form_set_error('disclaimer_exit_img', t('Please select an image to upload.'));
+    }
+  }
+
+/*
   $height = $form_state['values']['disclaimer_height'];
   $width = $form_state['values']['disclaimer_width'];
   $padding = $form_state['values']['disclaimer_padding'];
@@ -342,12 +383,6 @@ function disclaimer_admin_settings_validate($form, &$form_state) {
   $age_limit = $form_state['values']['disclaimer_age_limit'];
   $overlay = $form_state['values']['disclaimer_jqmodal_overlay'];
 
-  if ($form_state['values']['disclaimer_input_format']) {
-    variable_set('disclaimer_content_format', $form_state['values']['disclaimer_input_format']);
-  }
-  if ($form_state['values']['disclaimer_footer_input_format']) {
-    variable_set('disclaimer_content_footer_format', $form_state['values']['disclaimer_footer_input_format']);
-  }
   if (!empty($padding) && !is_numeric($padding)) {
     form_set_error('disclaimer_padding', t('You must enter a numeric padding.'));
   }
@@ -367,5 +402,30 @@ function disclaimer_admin_settings_validate($form, &$form_state) {
     form_set_error('disclaimer_jqmodal_overlay', t('You must enter a numeric overlay.'));
   }
   cache_clear_all();
+  */
+}
+
+function disclaimer_admin_settings_submit($form, &$form_state) {
+  unset($form_state['values']['form_id'], $form_state['values']['form_token'], $form_state['values']['form_build_id'], $form_state['values']['op'], $form_state['values']['submit']);
+  foreach ($form_state['values'] as $key => $value) {
+    if (is_array($value) && isset($form_state['values']['array_filter'])) {
+      $value = array_keys(array_filter($value));
+    }
+    variable_set($key, $value);
+  }
+  // files
+  if ($form_state['values']['disclaimer_action_type'] == 'image') {
+    if ($form_state['values']['disclaimer_enter_img'] != 0) {
+      $file = file_load($form_state['values']['disclaimer_enter_img']);
+      $file->status = FILE_STATUS_PERMANENT;
+      file_save($file);
+    }
+    if ($form_state['values']['disclaimer_exit_img'] != 0) {
+      $file = file_load($form_state['values']['disclaimer_exit_img']);
+      $file->status = FILE_STATUS_PERMANENT;
+      file_save($file);
+    }
+  }
+  drupal_set_message(t('The configuration options have been saved.'));
 }
 

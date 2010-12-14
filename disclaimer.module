@@ -3,9 +3,7 @@
 /**
  * @file
  * Create and show disclaimer for your site.
- * Visotors need js enabled and accept cookie
- *
- * This module is for Drupal 6.x only.
+ * Visitors need js enabled and accept cookie
  *
  * Module by: Mog
  * Mailto: tech@arthura.fr
@@ -13,157 +11,218 @@
  */
 
 /**
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function disclaimer_menu() {
   $items = array();
-    // disclaimer page
-    $items['disclaimer'] = array(
-      'title' => 'Disclaimer',
-      'page callback' => '_disclaimer_get_content',
-      'access arguments' => array('access content'),
-      'type' => MENU_SUGGESTED_ITEM,
-    );
-    // configuration page of the Disclaimer module
-    $items['admin/settings/disclaimer'] = array(
-      'title' => 'Disclaimer',
-      'description' => 'Administer Disclaimer settings.',
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('disclaimer_admin_settings'),
-      'access callback' => 'user_access',
-      'access arguments' => array('administer disclaimer settings'),
-      'file' => 'disclaimer.admin.inc',
-    );
-
+  // Disclaimer page
+  $items['disclaimer'] = array(
+    'page callback' => 'disclaimer_get_content',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  // Discliamer no theme page
+  $items['disclaimer/print'] = array(
+    'page callback' => 'disclaimer_get_content',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  // Disclaimer module settings
+  $items['admin/config/system/disclaimer'] = array(
+    'title' => 'Disclaimer',
+    'description' => 'Administer Disclaimer settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('disclaimer_admin_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer disclaimer settings'),
+    'file' => 'disclaimer.admin.inc',
+  );
   return $items;
 }
 
 /**
- * Implementation of hook_init().
+ * Implements hook_init().
  */
 function disclaimer_init() {
-  global $user;
-  if ((!user_access('bypass disclaimer') || (variable_get('disclaimer_logged', 1) == 1 && $user->uid)) && (_disclaimer_visibility() == 1)) {
-    $path = drupal_get_path('module', 'disclaimer');
-    if (variable_get('disclaimer_modal', 'nyroModal') == 'nyroModal') {
-      $path_css = '/nyroModal/styles/nyroModal.css';
-      $path_js = '/nyroModal/js/jquery.nyroModal.js';
-    }
-    else {
-      $path_css = '/jqModal/jqModal.css';
-      $path_js = '/jqModal/jqModal.js';
-    }
-    if (file_exists($path . $path_css)) {
-      drupal_add_css(drupal_get_path('module', 'disclaimer') . $path_css);
-    }
-    if (file_exists($path . $path_js)) {
-      drupal_add_js(drupal_get_path('module', 'disclaimer') . $path_js);
-    }
-    drupal_add_js(drupal_get_path('module', 'disclaimer') .'/disclaimer.js', 'module', variable_get('disclaimer_location_js', 'header'));
-    drupal_add_js(_disclaimer_get_js(), 'inline', variable_get('disclaimer_location_js', 'header'));
+  if (disclaimer_show()) {
+    // add modal library
+    drupal_add_library('disclaimer', variable_get('disclaimer_modal', 'nyroModal'));
+    // cookie settings
+    drupal_add_js(
+      array('disclaimer' => array(
+        'cookie_path' => variable_get('disclaimer_cookie_path', '/'),
+        'cookie_expires' => variable_get('disclaimer_cookie_expires', ''),
+        'cookie_domain' => variable_get('disclaimer_cookie_domain', ''),
+        ),
+      ),
+      'setting'
+    );
+    drupal_add_js(drupal_get_path('module', 'disclaimer') . '/disclaimer.js', array('scope' => 'footer'));
+    drupal_add_js(
+      disclaimer_get_js(),
+      array(
+        'type' => 'inline',
+        'scope' => 'header',
+      )
+    );
   }
 }
 
-/**
- * Implementation of hook_perm().
- */
-function disclaimer_perm() {
-  return array('administer disclaimer settings', 'bypass disclaimer');
+function disclaimer_show() {
+  global $user;
+  $show = FALSE;
+  // check cookie
+  if (!isset($_COOKIE[variable_get('disclaimer_cookie_name', 'disclaimerShow')])) {
+    // config and user access
+    if ((!user_access('bypass disclaimer') || (variable_get('disclaimer_logged', 1) == 1 && $user->uid)) && (_disclaimer_visibility() == 1)) {
+      $show = TRUE;
+    }
+  }
+  return $show;
 }
 
 /**
- * Declare footer hook
- * @return string A string containing HTML to be inserted
+ * Implements hook_permission().
  */
-function disclaimer_footer() {
+function disclaimer_permission() {
+  return array(
+    'administer disclaimer settings' => array(
+      'title' => t('administer disclaimer settings'),
+      'description' => t('Full administration access, only for admin.'),
+    ),
+    'bypass disclaimer' => array(
+      'title' => t('bypass disclaimer'),
+      'description' => t('If you want to hide disclaimer by roles.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+function disclaimer_page_alter(&$page) {
   global $user;
+  $output = FALSE;
   if (!user_access('bypass disclaimer') || (variable_get('disclaimer_logged', 1) == 1 && $user->uid)) {
     if (variable_get('disclaimer_modal', 'nyroModal') == 'jqModal') {
       $output = '<div id="disclaimer" style="display:none;" class="jqmWindow">&nbsp</div>';
     }
-    else {
-    $output = '<div>'. l('&nbsp;', 'disclaimer', array('attributes' => array('id' => 'disclaimer', 'style' => 'display:none;'), 'html' => TRUE)) .'</div>';
-    }
   }
-  return $output;
+  if ($output) {
+    $page['page_bottom']['disclaimer']= array(
+      '#type' => 'markup',
+      '#markup' => $output,
+    );
+  }
 }
 
 /**
  * Generate disclaimer content
  */
-function _disclaimer_get_content() {
-    $action_type = variable_get('disclaimer_action_type', 'text');
-    $exit_url = variable_get('disclaimer_exit_url', 'http://www.google.com');
-    $enter_url = variable_get('disclaimer_enter_url', '');
-    $nid = variable_get('disclaimer_node', '');
-    $nid_footer = variable_get('disclaimer_node_footer', '');
-    $age = variable_get('disclaimer_age_form', 0);
-    $age_limit = variable_get('disclaimer_age_limit', 18);
-    $modal = variable_get('disclaimer_modal', 'nyroModal');
-    $js = '';
-
-    switch ($action_type) {
-        case "image":
-          $enter_alt = variable_get('disclaimer_enter_img_alt', t('ENTER'));
-          $exit_alt = variable_get('disclaimer_exit_img_alt', t('EXIT'));
-          $enter = theme('image', 'files/'. variable_get('disclaimer_enter_img', 'enter.png'), $enter_alt, $enter_alt);
-          $exit = theme('image', 'files/'. variable_get('disclaimer_exit_img', 'exit.png'), $exit_alt, $exit_alt);
-        break;
-        default:
-          $enter = variable_get('disclaimer_enter_txt', t('ENTER'));
-          $exit = variable_get('disclaimer_exit_txt', t('EXIT'));
+function disclaimer_get_content($js = TRUE) {
+  $action_type = variable_get('disclaimer_action_type', 'text');
+  $exit_url = variable_get('disclaimer_exit_url', 'http://www.google.com');
+  $enter_url = variable_get('disclaimer_enter_url', '');
+  $nid = variable_get('disclaimer_node', 0);
+  $nid_footer = variable_get('disclaimer_node_footer', '');
+  $age = variable_get('disclaimer_age_form', 0);
+  $age_limit = variable_get('disclaimer_age_limit', 18);
+  $modal = variable_get('disclaimer_modal', 'nyroModal');
+  $enter = variable_get('disclaimer_enter_txt', t('ENTER'));
+  $exit = variable_get('disclaimer_exit_txt', t('EXIT'));
+  if ($action_type == 'image') {
+    // enter
+    $variables['alt'] = $variables['title'] = variable_get('disclaimer_enter_img_alt', t('ENTER'));
+    $file = file_load(variable_get('disclaimer_enter_img'));
+    if ($file) {
+      $variables['path'] = $file->uri;
+      $variables['attributes'] = '';
+      $enter = theme_image($variables);
     }
-
-    if ($age == 1) {
-      $age_form = drupal_get_form('disclaimer_age_form');
-      $rows[] = array(
+    else {
+      $enter = variable_get('disclaimer_enter_txt', t('ENTER'));
+    }
+    // exit
+    $variables['alt'] = $variables['title'] = variable_get('disclaimer_exit_img_alt', t('EXIT'));
+    if ($file) {
+      $file = file_load(variable_get('disclaimer_exit_img'));
+      $variables['path'] = $file->uri;
+      $variables['attributes'] = '';
+      $exit = theme_image($variables);
+    }
+    else {
+      $exit = variable_get('disclaimer_exit_txt', t('EXIT'));
+    }
+  }
+  else {
+    $enter = variable_get('disclaimer_enter_txt', t('ENTER'));
+    $exit = variable_get('disclaimer_exit_txt', t('EXIT'));
+  }
+  if ($age == 1) {
+    $age_form = drupal_get_form('disclaimer_age_form');
+    $rows[] = array(
         array('data' => $age_form, 'align' => 'center', 'colspan' => '2')
       );
-      $js = "CheckAge('". variable_get('disclaimer_cookie_name', 'disclaimerShow') ."', ". $age_limit .", '". $exit_url ."', '". $modal ."');";
+    $script = "CheckAge('" . variable_get('disclaimer_cookie_name', 'disclaimerShow') . "', " . $age_limit . ", '" . $exit_url . "', '" . $modal . "');";
+  }
+  else {
+    $script = 'WriteCookie(\'' . variable_get('disclaimer_cookie_name', 'disclaimerShow') . '\', \'1\');';
+    if ($modal == 'nyroModal') {
+      $script .= 'jQuery.nyroModalRemove();';
     }
     else {
-      $js = 'WriteCookie(\''. variable_get('disclaimer_cookie_name', 'disclaimerShow') .'\', \'1\');';
-      if ($modal == 'nyroModal') {
-        $js .= '$.nyroModalRemove();';
-      }
-      else {
-        $js .= '$(\'#disclaimer\').jqmHide();';
-      }
+      $script .= 'jQuery(\'#disclaimer\').jqmHide();';
     }
+  }
+  // enter redirect or not
+  if ($enter_url) {
+    $js ? $attributes = array('attributes' => array('onclick' => $script)): $attributes = array();
+    $enter = l($enter, $enter_url, $attributes + array('html' => TRUE));
+  }
+  else {
+    $js ? $attributes = 'href="javascript:void(0);" onclick="' . $script . '"': $attributes = 'href=""';
+    $enter = '<a ' . $attributes . '>' . $enter . '</a>';
+  }
+  $exit = l($exit, $exit_url, array('html' => TRUE));
 
-    if ($enter_url) {
-      $enter = l($enter, $enter_url, array('attributes' => array('onclick' => $js), 'html' => TRUE));
-    }
-    else {
-      $enter = '<a href="javascript:void(0);" onclick="'. $js .'">'. $enter .'</a>';
-    }
-    $exit = l($exit, $exit_url, array('html' => TRUE));
-
-    $rows[] = array(
-      array('data' => $enter, 'align' => 'center'),
-      array('data' => $exit, 'align' => 'center'),
-    );
-    if ($nid == 0) {
-      $output = check_markup(variable_get('disclaimer_content', ''), variable_get('disclaimer_content_format', 1), 1);
-    }
-    else {
-      $output = node_view(node_load($nid), FALSE, TRUE);
-    }
-    $output .= theme('table', array(), $rows);
-    if ($nid_footer == 0) {
-      $output .= check_markup(variable_get('disclaimer_content_footer', ''), variable_get('disclaimer_content_footer_format', 1), 1);
-    }
-    else {
-      $output .= node_view(node_load($nid_footer), FALSE, TRUE);
-    }
-
+  $rows[] = array(
+    array('data' => $enter, 'align' => 'center'),
+    array('data' => $exit, 'align' => 'center'),
+  );
+  // is node top selected ?
+  if ($nid == 0) {
+    $content = variable_get('disclaimer_content', array());
+    $output = check_markup($content['value'], $content['format']);
+  }
+  else {
+    $node = node_view(node_load($nid));
+    $output = drupal_render($node['body']);
+  }
+  // button output
+  $output .= theme('table', array('header' => array(), 'rows' => $rows));
+  // is node footer selected ?
+  if ($nid_footer == 0) {
+    $content = variable_get('disclaimer_content_footer', array());
+    $output .= check_markup($content['value'], $content['format']);
+  }
+  else {
+    $node = node_view(node_load($nid_footer));
+    $output .= drupal_render($node['body']);
+  }
+  if (arg(1) && (arg(1) == 'print')) {
+    // no theme
+    print $output;
+    exit;
+  }
+  else {
     return $output;
+  }
 }
 
 /**
  * Generate js function
  */
-function _disclaimer_get_js() {
+function disclaimer_get_js() {
   $cookie_path = variable_get('disclaimer_cookie_path', '/');
   $cookie_expires = variable_get('disclaimer_cookie_expires', '');
   $cookie_domain = variable_get('disclaimer_cookie_domain', '');
@@ -178,42 +237,16 @@ function _disclaimer_get_js() {
   else {
     $overlay = variable_get('disclaimer_jqmodal_overlay', 90);
   }
-  $js = 'function WriteCookie(nom, valeur){'."\n";
-  $js .= 'var argv=WriteCookie.arguments;'."\n";
-  $js .= 'var argc=WriteCookie.arguments.length;'."\n";
-  $js .= 'var expires=(argc > 2) ? argv[2] : null;'."\n";
-  $js .= 'var secure=(argc > 5) ? argv[5] : false;'."\n";
-  if (empty($cookie_path)) {
-    $js .= 'var path=(argc > 3) ? argv[3] : null;'."\n";
-  }
-  if (empty($cookie_domain)) {
-    $js .= 'var domain=(argc > 4) ? argv[4] : null;'."\n";
-  }
-    $js .= 'document.cookie=nom+"="+escape(valeur)+'."\n";
-    $js .= '((expires==null) ? "" : ("; expires="+expires.toGMTString()))+'."\n";
-  if (empty($cookie_path)) {
-    $js .= '((path==null) ? "" : ("; path="+path))+'."\n";
-  }
-  else {
-    $js .= '("; path='. $cookie_path .'")+'."\n";
-  }
-  if (empty($cookie_domain)) {
-    $js .= '((domain==null) ? "" : ("; domain="+domain))+'."\n";
-  }
-  else {
-    $js .= '("; domain='. $cookie_domain .'")+'."\n";
-  }
-  $js .= '((secure==true) ? "; secure" : "");}'."\n";
-
-  $js .= 'if (ReadCookie("'. variable_get('disclaimer_cookie_name', 'disclaimerShow') .'") == null) {';  $js .= '$(document).ready(function(){';
+  $js[] = 'jQuery(document).ready(function(){';
   if ($modal == 'nyroModal') {
-    $js .= '$(\'#disclaimer\').nyroModalManual({modal:true, minWidth:'. $width .', minHeight:'. $height .', padding:'. $padding .', debug:'. $debug .', bgcolor:\'#'. $bgcolor .'\'});';
+    $js[] = 'jQuery.nyroModalManual({modal:true, url:\'' . url('disclaimer/print') . '\', minWidth:' . $width . ', minHeight:' . $height . ', padding:' . $padding . ', debug:' . $debug . ', bgColor:\'#' . $bgcolor . '\'});';
   }
   else {
-    $js .= '$(\'#disclaimer\').jqm({ajax:\''. base_path() .'/disclaimer\', overlay:'. $overlay .', modal:true}).jqmShow();';
+    $js[] = 'jQuery(\'#disclaimer\').jqm({ajax:\'' . base_path() . '/disclaimer\', overlay:' . $overlay . ', modal:true}).jqmShow();';
   }
-  $js .= '});}';
-  return $js;
+  $js[] = '});';
+  $output = implode("\n", $js);
+  return $output;
 }
 
 /**
@@ -224,22 +257,28 @@ function _disclaimer_get_js() {
 function _disclaimer_visibility() {
   $visibility = variable_get('disclaimer_visibility', 0);
   $pages = variable_get('disclaimer_pages', "admin/*\nuser");
-
-  if ($pages) {
-    if ($visibility < 2) {
-      $path = drupal_get_path_alias($_GET['q']);
-      $page_match = drupal_match_path($path, $pages);
-      if ($path != $_GET['q']) {
-        $page_match = $page_match || drupal_match_path($_GET['q'], $pages);
-      }
-      $page_match = !($visibility xor $page_match);
+  // Convert path to lowercase. This allows comparison of the same path
+  // with different case. Ex: /Page, /page, /PAGE.
+  $pages = drupal_strtolower($pages);
+  if ($visibility < 2) {
+    // Convert the Drupal path to lowercase
+    $path = drupal_strtolower(drupal_get_path_alias($_GET['q']));
+    // Compare the lowercase internal and lowercase path alias (if any).
+    $page_match = drupal_match_path($path, $pages);
+    if ($path != $_GET['q']) {
+      $page_match = $page_match || drupal_match_path($_GET['q'], $pages);
     }
-    else {
-      $page_match = drupal_eval($pages);
-    }
+    // When $visibility has a value of 0,
+    // the disclaimer is displayed on all pages except those listed in $pages.
+    // When set to 1, it is displayed only on those
+    // pages listed in $pages.
+    $page_match = !($visibility xor $page_match);
+  }
+  elseif (module_exists('php')) {
+    $page_match = php_eval($pages);
   }
   else {
-    $page_match = TRUE;
+    $page_match = FALSE;
   }
   return $page_match;
 }
@@ -248,7 +287,7 @@ function _disclaimer_visibility() {
  * function to set age form on disclaimer
  * @return array an array of forms
  */
-function disclaimer_age_form() {
+function disclaimer_age_form($form) {
   $form['disclaimer_age'] = array(
     '#type' => 'date',
     '#title' => t('Date of Birth'),
@@ -257,3 +296,33 @@ function disclaimer_age_form() {
   return $form;
 }
 
+/**
+ * Implements hook_library().
+ */
+function disclaimer_library() {
+  // nyroModal.
+  $libraries['nyroModal'] = array(
+    'title' => 'nyroModal',
+    'website' => 'http://plugins.jquery.com/project/nyroModal',
+    'version' => '1.6.1',
+    'js' => array(
+      drupal_get_path('module', 'disclaimer') . '/nyroModal/js/jquery.nyroModal.js' => array(),
+    ),
+    'css' => array(
+      drupal_get_path('module', 'disclaimer') . '/nyroModal/styles/nyroModal.css' => array(),
+    ),
+  );
+  // nyroModal.
+  $libraries['jqModal'] = array(
+    'title' => 'jqModal',
+    'website' => 'http://dev.iceburg.net/jquery/jqModal/',
+    'version' => '2009.03.01 +r14',
+    'js' => array(
+      drupal_get_path('module', 'disclaimer') . '/jqModal/jqModal.js' => array(),
+    ),
+    'css' => array(
+      drupal_get_path('module', 'disclaimer') . '/jqModal/jqModal.css' => array(),
+    ),
+  );
+  return $libraries;
+}
