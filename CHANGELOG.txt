@@ -38,3 +38,25 @@ Updated uninstall variable_del().
 Disclaimer 6.x-1.5, 2009-08-17
 ------------------------------
 Error on 1.4 CVS release, wrong files.
+
+Disclaimer 6.x-1.6, 2010-09-21
+------------------------------
+bug #917252: Error for image button option by willeaton: Correct files path.
+Correct error on jqModal.
+Correct check_markup() filter format to disable ckeck access.
+
+Disclaimer 6.x-1.7, 2010-09-21
+------------------------------
+bug #610192: Admin page permissions don't work by cpforbes: correct typo on menu access and default var.
+
+Disclaimer 6.x-1.8, 2011-01-05
+------------------------------
+fix bug #1015542: Disclaimer issue with anonymous user without access to input filter by rachellawson, already fixed on dev, ported.
+
+Disclaimer 6.x-1.9, 2011-01-05
+------------------------------
+Added thickbox module compatibility (http://drupal.org/node/996818#comment-3830116)
+Fix jqModal bug
+Added enter and exit file upload (usability)
+Update translation
+Update install.txt

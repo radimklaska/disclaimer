@@ -20,6 +20,9 @@ Requirements
 
 This module require at least version 6.x of Drupal.
 This module require 
+Thickbox module (easy setup !) from
+http://drupal.org/project/thickbox
+- AND/OR -
 NyroModal jquery plugin 1.6.1+ from
 http://plugins.jquery.com/project/nyroModal
 - AND/OR -
@@ -34,15 +37,22 @@ Installation
    of your Drupal installation (for example 'sites/all/modules/').
 
    -- you can choose Modal script you will set --
+
+   -- if you choose thickbox --
+
+1.1. Download and install 'thickbox' module to the modules directory
+   of your Drupal installation (for example 'sites/all/modules/').
+1.2. Go to 'admin/build/modules' and enable thickbox.
+   
    -- if you choose nyroModal --
 
-2. Download NyroModal archive (version 1.6.1+) at 
+1.1. Download NyroModal archive (version 1.6.1+) at 
    http://plugins.jquery.com/project/nyroModal
 
-3. Create nyroModal folder in disclaimer module
+1.2. Create nyroModal folder in disclaimer module
    sites/all/modules/disclaimer/nyroModal
 
-4. Extract all NyroModal archive content in this folder.
+1.3. Extract all NyroModal archive content in this folder.
    so directory look likes:
     disclaimer/nyroModal/js/
     disclaimer/nyroModal/img/
@@ -50,44 +60,42 @@ Installation
     
     no need of php files given in NyroModal package.
 
-5. Rename one of the NyroModal script (packed recommended) on "disclaimer/nyromodal/js/" 
+1.4. Rename one of the NyroModal script (packed recommended) on "disclaimer/nyromodal/js/" 
    to "jquery.nyroModal.js"
 
-6. Module will use nyroModal.css, rename -full version if you need. Edit to your need.
+1.5. Module will use nyroModal.css, rename -full version if you need. Edit to your need.
 
    -- if you choose jqModal --
 
-7. Download jqModal script (version 2009.03.01 +r14+) at 
+1.1. Download jqModal script (version 2009.03.01 +r14+) at 
    http://plugins.jquery.com/project/jqModal
    (up to date) http://dev.iceburg.net/jquery/jqModal/
    Download jqModal css sample at
    http://dev.iceburg.net/jquery/jqModal/
 
-8. Create jqModal folder in disclaimer module
+1.2. Create jqModal folder in disclaimer module
    sites/all/modules/disclaimer/jqModal
 
-9. Copy both js AND css files in this folder.
+1.3. Copy both js AND css files in this folder.
    so directory look likes:
     disclaimer/jqModal/jqModal.js
     disclaimer/jqModal/jqModal.css
 
   -- then --
 
-10. In order to get disclaimer with customizes regions (no sidebar, etc...), you 
+2. In order to get disclaimer with customizes regions (no sidebar, etc...), you 
   can set-up a tpl file. The better way is to copy your page.tpl.php file from
   your theme directory, rename it page-disclaimer.tpl.php and edit to your need
   to delete sidebar zones. 
   There is a sample page-disclaimer.tpl.php file in disclaimer module made from
   GARLAND theme. It can produce error on other themes.
 
-11. Go to 'admin/build/modules' and enable disclaimer.
+3. Go to 'admin/build/modules' and enable disclaimer.
 
-12. Go to 'admin/settings/disclaimer' and edit option and content for the disclaimer
+4. Go to 'admin/settings/disclaimer' and edit option and content for the disclaimer
    to your need.
 
 *******************************************************************************************
-
-This module has been developed by Mog for arthur-com.net
 
 Post a message on the drupal.org site if you have any ideas on 
 how we can improve the module.

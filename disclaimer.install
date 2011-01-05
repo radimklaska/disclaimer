@@ -22,12 +22,12 @@ function disclaimer_requirements($phase) {
     case 'runtime':
       $path = drupal_get_path('module', 'disclaimer') .'/nyroModal/js/jquery.nyroModal.js';
       $path2 = drupal_get_path('module', 'disclaimer') .'/jqModal/jqModal.js';
-      if (!file_exists($path) && !file_exists($path2)) {
+      if (!file_exists($path) || !file_exists($path2) || !module_exist('thickbox')) {
         $requirements['modal'] = array(
           'title' => $t('Disclaimer module'),
-          'description' => $t('Please create "nyroModal" and/or "jqModal" folder in disclaimer module then follow INSTALL.txt instructions'),
+          'description' => $t('Please download and activate thickbox module or create "nyroModal" and/or "jqModal" folder in disclaimer module then follow INSTALL.txt instructions'),
           'severity' => $phase == 'install' ? REQUIREMENT_WARNING : REQUIREMENT_ERROR,
-          'value' => $t('Copy nyroModal or jqModal.'),
+          'value' => $t('Activate thickbox or copy nyroModal or jqModal.'),
         );
       }
   }

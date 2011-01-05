@@ -26,12 +26,16 @@ function disclaimer_admin_settings() {
   if (file_exists($path .'/jqModal/jqModal.js') && file_exists($path .'/jqModal/jqModal.css')) {
     $optionsmodal['jqModal'] = 'jqModal';
   }
+  if (module_exists('thickbox')) {
+    $optionsmodal['thickbox'] = 'thickbox';
+  }
   if (empty($optionsmodal)) {
     $optionsmodal[] = t('No modal script found');
     if ($user->uid == 1) {
       drupal_set_message(t('Can\'t find any modal script. Please see INSTALL.txt.'), 'error');
     }
   }
+  $form['#attributes'] = array('enctype' => 'multipart/form-data');
   $form['disclaimer_preview'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
@@ -167,12 +171,11 @@ function disclaimer_admin_settings() {
     '#collapsed' => TRUE,
     '#title' => t('Image settings'),
   );
+  $existing_file = variable_get('disclaimer_enter_img_path', FALSE);
   $form['disclaimer_action_style']['disclaimer_action']['img']['disclaimer_enter_img'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Disclaimer enter image name'),
-    '#size' => 20,
-    '#default_value' => variable_get('disclaimer_enter_img', 'enter.png'),
-    '#description' => t('Set the image name to be used for Enter action on disclaimer. Path is relative to /files/, so the image need to be in your /files directory. Default is "enter.png"'),
+    '#type' => 'file',
+    '#title' => t('Disclaimer enter image'),
+    '#description' => t('Current file: !file', array('!file' => $existing_file ? $existing_file: t('none'))),
   );
   $form['disclaimer_action_style']['disclaimer_action']['img']['disclaimer_enter_img_alt'] = array(
     '#type' => 'textfield',
@@ -181,13 +184,11 @@ function disclaimer_admin_settings() {
     '#default_value' => variable_get('disclaimer_enter_img_alt', 'ENTER'),
     '#description' => t('Set the image alt/title text to be used for Enter action on disclaimer. Default is "Enter".'),
   );
-
+  $existing_file = variable_get('disclaimer_exit_img_path', FALSE);
   $form['disclaimer_action_style']['disclaimer_action']['img']['disclaimer_exit_img'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Disclaimer exit image name'),
-    '#size' => 20,
-    '#default_value' => variable_get('disclaimer_exit_img', 'exit.png'),
-    '#description' => t('Set the image name to be used for Exit action on disclaimer. Path is relative to /files/, so the image need to be in your /files directory. Default is "exit.png"'),
+    '#type' => 'file',
+    '#title' => t('Disclaimer exit image'),
+    '#description' => t('Current file: !file', array('!file' => $existing_file ? $existing_file: t('none'))),
   );
   $form['disclaimer_action_style']['disclaimer_action']['img']['disclaimer_exit_img_alt'] = array(
     '#type' => 'textfield',
@@ -202,6 +203,7 @@ function disclaimer_admin_settings() {
     '#collapsed' => FALSE,
     '#title' => t('Disclaimer modal options'),
   );
+  
   $form['modal']['disclaimer_modal'] = array(
     '#type' => 'select',
     '#title' => t('Choose modal jQuery plugin'),
@@ -209,75 +211,105 @@ function disclaimer_admin_settings() {
     '#options' => $optionsmodal,
     '#description' => t('Select the modal script you want to use. See INSTALL.txt for instalation and compare.'),
   );
-  $form['modal']['disclaimer_options_nyromodal'] = array(
-    '#type' => 'fieldset',
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#title' => t('Disclaimer nyroModal options'),
-    '#description' => t('Visit !url for settings explanation.', array('!url' => l('http://nyromodal.nyrodev.com/', 'http://nyromodal.nyrodev.com/', array('html' => TRUE)))),
-  );
-  $form['modal']['disclaimer_options_nyromodal']['disclaimer_width'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Minimum width'),
-    '#field_suffix' => t('px'),
-    '#default_value' => variable_get('disclaimer_width', 400),
-    '#size' => 4,
-    '#maxlength' => 4,
-    '#description' => t('The minimum width of the lightbox containing the disclaimer. Default 400px.'),
-  );
-  $form['modal']['disclaimer_options_nyromodal']['disclaimer_height'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Minimum height'),
-    '#field_suffix' => t('px'),
-    '#default_value' => variable_get('disclaimer_height', 300),
-    '#size' => 4,
-    '#maxlength' => 4,
-    '#description' => t('The minimum height of the lightbox containing the disclaimer. Default 300px.'),
-  );
-  $form['modal']['disclaimer_options_nyromodal']['disclaimer_padding'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Padding'),
-    '#field_suffix' => t('px'),
-    '#default_value' => variable_get('disclaimer_padding', 20),
-    '#size' => 3,
-    '#maxlength' => 3,
-    '#description' => t('The padding of the lightbox containing the disclaimer. Default 20px.'),
-  );
-  $form['modal']['disclaimer_options_nyromodal']['disclaimer_bgcolor'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Background color'),
-    '#field_prefix' => '#',
-    '#default_value' => variable_get('disclaimer_bgcolor', '000000'),
-    '#size' => 6,
-    '#maxlength' => 6,
-    '#description' => t('The hex color of the lightbox background. Default #000000.'),
-  );
-  $form['modal']['disclaimer_options_nyromodal']['disclaimer_debug'] = array(
-    '#type' => 'select',
-    '#title' => t('Debug mode'),
-    '#default_value' => variable_get('disclaimer_debug', 'false'),
-    '#options' => array(
-      'false' => t('False'),
-      'true' => t('True'),
-    ),
-    '#description' => t('Debug mode for the NyroModal.'),
-  );
-  $form['modal']['disclaimer_options_jqmodal'] = array(
-    '#type' => 'fieldset',
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-    '#title' => t('Disclaimer jqModal options'),
-    '#description' => t('Visit !url for settings explanation.', array('!url' => l('http://dev.iceburg.net/jquery/jqModal/', 'http://dev.iceburg.net/jquery/jqModal/', array('html' => TRUE)))),
-  );
-  $form['modal']['disclaimer_options_jqmodal']['disclaimer_jqmodal_overlay'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Background overlay'),
-    '#field_suffix' => t('%'),
-    '#default_value' => variable_get('disclaimer_jqmodal_overlay', 90),
-    '#size' => 3,
-    '#maxlength' => 3,
-    '#description' => t('The background overlay of the modal. Default 90%.'),
-  );
+  if (isset($optionsmodal['nyroModal'])) {
+    $form['modal']['disclaimer_options_nyromodal'] = array(
+      '#type' => 'fieldset',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#title' => t('Disclaimer nyroModal options'),
+      '#description' => t('Visit !url for settings explanation.', array('!url' => l('http://nyromodal.nyrodev.com/', 'http://nyromodal.nyrodev.com/', array('html' => TRUE)))),
+    );
+    $form['modal']['disclaimer_options_nyromodal']['disclaimer_width'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Minimum width'),
+      '#field_suffix' => t('px'),
+      '#default_value' => variable_get('disclaimer_width', 400),
+      '#size' => 4,
+      '#maxlength' => 4,
+      '#description' => t('The minimum width of the lightbox containing the disclaimer. Default 400px.'),
+    );
+    $form['modal']['disclaimer_options_nyromodal']['disclaimer_height'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Minimum height'),
+      '#field_suffix' => t('px'),
+      '#default_value' => variable_get('disclaimer_height', 300),
+      '#size' => 4,
+      '#maxlength' => 4,
+      '#description' => t('The minimum height of the lightbox containing the disclaimer. Default 300px.'),
+    );
+    $form['modal']['disclaimer_options_nyromodal']['disclaimer_padding'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Padding'),
+      '#field_suffix' => t('px'),
+      '#default_value' => variable_get('disclaimer_padding', 20),
+      '#size' => 3,
+      '#maxlength' => 3,
+      '#description' => t('The padding of the lightbox containing the disclaimer. Default 20px.'),
+    );
+    $form['modal']['disclaimer_options_nyromodal']['disclaimer_bgcolor'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Background color'),
+      '#field_prefix' => '#',
+      '#default_value' => variable_get('disclaimer_bgcolor', '000000'),
+      '#size' => 6,
+      '#maxlength' => 6,
+      '#description' => t('The hex color of the lightbox background. Default #000000.'),
+    );
+    $form['modal']['disclaimer_options_nyromodal']['disclaimer_debug'] = array(
+      '#type' => 'select',
+      '#title' => t('Debug mode'),
+      '#default_value' => variable_get('disclaimer_debug', 'false'),
+      '#options' => array(
+        'false' => t('False'),
+        'true' => t('True'),
+      ),
+      '#description' => t('Debug mode for the NyroModal.'),
+    );
+  }
+  if (isset($optionsmodal['thickbox'])) {
+    $form['modal']['disclaimer_options_thickbox'] = array(
+      '#type' => 'fieldset',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#title' => t('Disclaimer thickbox options'),
+    );
+    $form['modal']['disclaimer_options_thickbox']['disclaimer_width'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Minimum width'),
+      '#field_suffix' => t('px'),
+      '#default_value' => variable_get('disclaimer_width', 400),
+      '#size' => 4,
+      '#maxlength' => 4,
+      '#description' => t('The minimum width of the lightbox containing the disclaimer. Default 400px.'),
+    );
+    $form['modal']['disclaimer_options_thickbox']['disclaimer_height'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Minimum height'),
+      '#field_suffix' => t('px'),
+      '#default_value' => variable_get('disclaimer_height', 300),
+      '#size' => 4,
+      '#maxlength' => 4,
+      '#description' => t('The minimum height of the lightbox containing the disclaimer. Default 300px.'),
+    );
+  }
+  if (isset($optionsmodal['jqModal'])) {
+    $form['modal']['disclaimer_options_jqmodal'] = array(
+      '#type' => 'fieldset',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#title' => t('Disclaimer jqModal options'),
+      '#description' => t('Visit !url for settings explanation.', array('!url' => l('http://dev.iceburg.net/jquery/jqModal/', 'http://dev.iceburg.net/jquery/jqModal/', array('html' => TRUE)))),
+    );
+    $form['modal']['disclaimer_options_jqmodal']['disclaimer_jqmodal_overlay'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Background overlay'),
+      '#field_suffix' => '%',
+      '#default_value' => variable_get('disclaimer_jqmodal_overlay', 90),
+      '#size' => 3,
+      '#maxlength' => 3,
+      '#description' => t('The background overlay of the modal. Default 90%.'),
+    );
+  }
   $form['disclaimer_advanced'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
@@ -326,7 +358,12 @@ function disclaimer_admin_settings() {
     '#default_value' => variable_get('disclaimer_cookie_domain', ''),
     '#description' => t('Set the cookie domain. Empty set default server domain.'),
   );
-    return system_settings_form($form);
+  $form['disclaimer_modal_active'] = array(
+    '#type' => 'hidden',
+    '#value' => implode(',', $optionsmodal),
+  );
+  $form['#submit'][] = 'disclaimer_admin_settings_submit';
+  return system_settings_form($form);
 }
 
 /**
@@ -335,37 +372,66 @@ function disclaimer_admin_settings() {
  * Ensure that numeric value are numeric... and set input format
  */
 function disclaimer_admin_settings_validate($form, &$form_state) {
-  $height = $form_state['values']['disclaimer_height'];
-  $width = $form_state['values']['disclaimer_width'];
-  $padding = $form_state['values']['disclaimer_padding'];
-  $bgcolor = $form_state['values']['disclaimer_bgcolor'];
   $age_limit = $form_state['values']['disclaimer_age_limit'];
-  $overlay = $form_state['values']['disclaimer_jqmodal_overlay'];
+  if (!empty($age_limit) && (!is_numeric($age_limit) || $age_limit < 0)) {
+    form_set_error('disclaimer_age_limit', t('You must enter an age greater than 0.'));
+  }
+  $modal = explode(',', $form_state['values']['disclaimer_modal_active']);
+  // nyromodal
+  if (in_array('nyroModal', $modal)) {
+    $height = $form_state['values']['disclaimer_height'];
+    $width = $form_state['values']['disclaimer_width'];
+    $padding = $form_state['values']['disclaimer_padding'];
+    $bgcolor = $form_state['values']['disclaimer_bgcolor'];
+    if (!empty($height) && (!is_numeric($height) || $height < 0)) {
+      form_set_error('disclaimer_height', t('You must enter a height greater than 0 pixels.'));
+    }
+    if (!empty($width) && (!is_numeric($width) || $width < 0)) {
+      form_set_error('disclaimer_width', t('You must enter a width greater than 0 pixels.'));
+    }
+    if (!empty($padding) && !is_numeric($padding)) {
+      form_set_error('disclaimer_padding', t('You must enter a numeric padding.'));
+    }
+    if (empty($bgcolor)) {
+      form_set_error('disclaimer_bgcolor', t('You must enter a bgcolor.'));
+    }
+  }
+  //jqModal
+  if (in_array('jqModal', $modal)) {
+    $overlay = $form_state['values']['disclaimer_jqmodal_overlay'];
+    if (!empty($overlay) && !is_numeric($overlay)) {
+      form_set_error('disclaimer_jqmodal_overlay', t('You must enter a numeric overlay.'));
+    }
+  }
+}
 
+/**
+ * Submit function for the general configuration form.
+ *
+ */
+function disclaimer_admin_settings_submit($form, &$form_state) {
   if ($form_state['values']['disclaimer_input_format']) {
     variable_set('disclaimer_content_format', $form_state['values']['disclaimer_input_format']);
   }
   if ($form_state['values']['disclaimer_footer_input_format']) {
     variable_set('disclaimer_content_footer_format', $form_state['values']['disclaimer_footer_input_format']);
   }
-  if (!empty($padding) && !is_numeric($padding)) {
-    form_set_error('disclaimer_padding', t('You must enter a numeric padding.'));
+
+  $validators = array(
+    'file_validate_extensions' => array('gif jpg jpeg png'),
+  );
+
+  // Save new file uploads.
+  if ($file = file_save_upload('disclaimer_enter_img', $validators, file_directory_path(), FILE_EXISTS_REPLACE)) {
+    file_set_status($file, FILE_STATUS_PERMANENT);
+    variable_set('disclaimer_enter_img_path', $file->filepath);
   }
-  if (empty($bgcolor)) {
-    form_set_error('disclaimer_bgcolor', t('You must enter a bgcolor.'));
+  if ($file = file_save_upload('disclaimer_exit_img', $validators, file_directory_path(), FILE_EXISTS_REPLACE)) {
+    file_set_status($file, FILE_STATUS_PERMANENT);
+    variable_set('disclaimer_exit_img_path', $file->filepath);
   }
-  if (!empty($width) && (!is_numeric($width) || $width < 0)) {
-    form_set_error('disclaimer_width', t('You must enter a width greater than 0 pixels.'));
-  }
-  if (!empty($height) && (!is_numeric($height) || $height < 0)) {
-    form_set_error('disclaimer_height', t('You must enter a height greater than 0 pixels.'));
-  }
-  if (!empty($age_limit) && (!is_numeric($age_limit) || $age_limit < 0)) {
-    form_set_error('disclaimer_age_limit', t('You must enter an age greater than 0.'));
-  }
-  if (!empty($overlay) && !is_numeric($overlay)) {
-    form_set_error('disclaimer_jqmodal_overlay', t('You must enter a numeric overlay.'));
-  }
-  cache_clear_all();
 }
+
+
+
 

@@ -38,7 +38,17 @@ function CheckAge(cookie, limit, exit_url, modal) {
   } else {
     // age limit ok, close modal and set cookie
     WriteCookie(cookie);
-    if (modal=='nyroModal'){$.nyroModalRemove();}else{$('#disclaimer').jqmHide();}
+    switch (modal) {
+     case 'nyroModal':
+      $.nyroModalRemove();
+     break;
+     case 'jqModal':
+      $('#disclaimer').jqmHide();
+     break;
+     case 'thickbox':
+      tb_remove();
+     break;
+    }
     return true;
   }
 }
