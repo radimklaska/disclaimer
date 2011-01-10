@@ -21,7 +21,7 @@ function disclaimer_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
-  // Discliamer no theme page
+  // Disclaimer no theme page
   $items['disclaimer/print'] = array(
     'page callback' => 'disclaimer_get_content',
     'access arguments' => array('access content'),
@@ -120,6 +120,7 @@ function disclaimer_page_alter(&$page) {
  * Generate disclaimer content
  */
 function disclaimer_get_content($js = TRUE) {
+  $output = '';
   $action_type = variable_get('disclaimer_action_type', 'text');
   $exit_url = variable_get('disclaimer_exit_url', 'http://www.google.com');
   $enter_url = variable_get('disclaimer_enter_url', '');
@@ -191,8 +192,8 @@ function disclaimer_get_content($js = TRUE) {
   );
   // is node top selected ?
   if ($nid == 0) {
-    $content = variable_get('disclaimer_content', array());
-    $output = check_markup($content['value'], $content['format']);
+    $content = variable_get('disclaimer_content', FALSE);
+    $content ? $output .= check_markup($content['value'], $content['format']): '';
   }
   else {
     $node = node_view(node_load($nid));
@@ -202,8 +203,8 @@ function disclaimer_get_content($js = TRUE) {
   $output .= theme('table', array('header' => array(), 'rows' => $rows));
   // is node footer selected ?
   if ($nid_footer == 0) {
-    $content = variable_get('disclaimer_content_footer', array());
-    $output .= check_markup($content['value'], $content['format']);
+    $content = variable_get('disclaimer_content_footer', FALSE);
+    $content ? $output .= check_markup($content['value'], $content['format']): '';
   }
   else {
     $node = node_view(node_load($nid_footer));

@@ -64,7 +64,7 @@ function disclaimer_admin_settings() {
       ),
     ),
   );
-  $content = variable_get('disclaimer_content', array());
+  $content = variable_get('disclaimer_content', array('value' => ''));
   $form['content']['container']['disclaimer_content'] = array(
     '#type' => 'text_format',
     '#default_value' => $content['value'],
@@ -86,7 +86,7 @@ function disclaimer_admin_settings() {
       ),
     ),
   );
-  $content = variable_get('disclaimer_content_footer', array());
+  $content = variable_get('disclaimer_content_footer', array('value' => ''));
   $form['content']['container-footer']['disclaimer_content_footer'] = array(
     '#type' => 'text_format',
     '#default_value' => $content['value'],
