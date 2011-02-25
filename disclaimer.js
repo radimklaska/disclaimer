@@ -1,4 +1,3 @@
-// $Id$
 /**
  *  @name disclaimer module js file
  */
