@@ -1,4 +1,3 @@
-; $Id$
 name = Disclaimer
 description = A nice lightbox disclaimer.
 core = 6.x
