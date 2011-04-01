@@ -16,23 +16,23 @@
  */
 function disclaimer_menu() {
   $items = array();
-    // disclaimer page
-    $items['disclaimer'] = array(
-      'title' => 'Disclaimer',
-      'page callback' => '_disclaimer_get_content',
-      'access arguments' => array('access content'),
-      'type' => MENU_SUGGESTED_ITEM,
-    );
-    // configuration page of the Disclaimer module
-    $items['admin/settings/disclaimer'] = array(
-      'title' => 'Disclaimer',
-      'description' => 'Administer Disclaimer settings.',
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('disclaimer_admin_settings'),
-      'access callback' => 'user_access',
-      'access arguments' => array('administer disclaimer settings'),
-      'file' => 'disclaimer.admin.inc',
-    );
+  // Disclaimer page
+  $items['disclaimer'] = array(
+    'title' => 'Disclaimer',
+    'page callback' => '_disclaimer_get_content',
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+  // configuration page of the Disclaimer module
+  $items['admin/settings/disclaimer'] = array(
+    'title' => 'Disclaimer',
+    'description' => 'Administer Disclaimer settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('disclaimer_admin_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer disclaimer settings'),
+    'file' => 'disclaimer.admin.inc',
+  );
 
   return $items;
 }
@@ -43,30 +43,21 @@ function disclaimer_menu() {
 function disclaimer_init() {
   global $user;
   if ((!user_access('bypass disclaimer') || (variable_get('disclaimer_logged', 1) == 1 && $user->uid)) && (_disclaimer_visibility() == 1)) {
-    $path = drupal_get_path('module', 'disclaimer');
-    $modal = variable_get('disclaimer_modal', 'thickbox');
-    switch ($modal) {
-      case 'nyroModal':
-        $path_css = '/nyroModal/styles/nyroModal.css';
-        $path_js = '/nyroModal/js/jquery.nyroModal.js';
-        break;
-      case 'jqModal':
-        $path_css = '/jqModal/jqModal.css';
-        $path_js = '/jqModal/jqModal.js';
-        break;
-      case 'thickbox':
-        $path_css = FALSE;
-        $path_js = FALSE;
-        break;
-    }
-    if (file_exists($path . $path_css)) {
-      drupal_add_css(drupal_get_path('module', 'disclaimer') . $path_css);
-    }
-    if (file_exists($path . $path_js)) {
-      drupal_add_js(drupal_get_path('module', 'disclaimer') . $path_js);
-    }
+    // settings
+    $settings = array(
+      // common
+      'modal' => variable_get('disclaimer_modal', 'thickbox'),
+      'cookie_path' => variable_get('disclaimer_cookie_path', '/'),
+      'cookie_domain' => variable_get('disclaimer_cookie_domain', ''),
+      'width' => variable_get('disclaimer_width', '400px'),
+      'height' => variable_get('disclaimer_height', '300px'),
+      // colorbox
+      'opacity' => variable_get('disclaimer_overlay', 0.85),
+      'speed' => variable_get('disclaimer_speed', 350),
+      'transition' => variable_get('disclaimer_transition', 'elastic'),
+    );
+    drupal_add_js(array('disclaimer' => $settings), 'setting');
     drupal_add_js(drupal_get_path('module', 'disclaimer') .'/disclaimer.js', 'module', variable_get('disclaimer_location_js', 'header'));
-    drupal_add_js(_disclaimer_get_js(), 'inline', variable_get('disclaimer_location_js', 'header'));
   }
 }
 
@@ -75,19 +66,6 @@ function disclaimer_init() {
  */
 function disclaimer_perm() {
   return array('administer disclaimer settings', 'bypass disclaimer');
-}
-
-/**
- * Declare footer hook
- * @return string A string containing HTML to be inserted for jqModal
- */
-function disclaimer_footer() {
-  global $user;
-  if (!user_access('bypass disclaimer') || (variable_get('disclaimer_logged', 1) == 1 && $user->uid)) {
-    if (variable_get('disclaimer_modal', 'thickbox') == 'jqModal') {
-      return '<div id="disclaimer" class="jqmWindow" style="display: none;">&nbsp;</div>';
-    }
-  }
 }
 
 /**
@@ -126,14 +104,11 @@ function _disclaimer_get_content() {
     else {
       $js = 'WriteCookie(\''. variable_get('disclaimer_cookie_name', 'disclaimerShow') .'\', \'1\');';
       switch ($modal) {
-        case 'nyroModal':
-          $js .= '$.nyroModalRemove();';
-          break;
-        case 'jqModal':
-          $js .= '$(\'#disclaimer\').jqmHide();';
-          break;
         case 'thickbox':
           $js .= 'tb_remove();';
+          break;
+        case 'colorbox':
+          $js .= '$.colorbox.remove();';
           break;
       }
     }
@@ -165,66 +140,6 @@ function _disclaimer_get_content() {
     }
 
     return $output;
-}
-
-/**
- * Generate js function
- */
-function _disclaimer_get_js() {
-  $cookie_path = variable_get('disclaimer_cookie_path', '/');
-  $cookie_expires = variable_get('disclaimer_cookie_expires', '');
-  $cookie_domain = variable_get('disclaimer_cookie_domain', '');
-  $modal = variable_get('disclaimer_modal', 'thickbox');
-  if ($modal == 'nyroModal' || $modal == 'thickbox') {
-    $debug = variable_get('disclaimer_debug', 'false');
-    $width = variable_get('disclaimer_width', 400);
-    $height = variable_get('disclaimer_height', 300);
-    $padding = variable_get('disclaimer_padding', 20);
-    $bgcolor = variable_get('disclaimer_bgcolor', '000000');
-  } elseif ($modal == 'jqModal') {
-    $overlay = variable_get('disclaimer_jqmodal_overlay', 90);
-  }
-  $js = 'function WriteCookie(nom, valeur){'."\n";
-  $js .= 'var argv=WriteCookie.arguments;'."\n";
-  $js .= 'var argc=WriteCookie.arguments.length;'."\n";
-  $js .= 'var expires=(argc > 2) ? argv[2] : null;'."\n";
-  $js .= 'var secure=(argc > 5) ? argv[5] : false;'."\n";
-  if (empty($cookie_path)) {
-    $js .= 'var path=(argc > 3) ? argv[3] : null;'."\n";
-  }
-  if (empty($cookie_domain)) {
-    $js .= 'var domain=(argc > 4) ? argv[4] : null;'."\n";
-  }
-    $js .= 'document.cookie=nom+"="+escape(valeur)+'."\n";
-    $js .= '((expires==null) ? "" : ("; expires="+expires.toGMTString()))+'."\n";
-  if (empty($cookie_path)) {
-    $js .= '((path==null) ? "" : ("; path="+path))+'."\n";
-  }
-  else {
-    $js .= '("; path='. $cookie_path .'")+'."\n";
-  }
-  if (empty($cookie_domain)) {
-    $js .= '((domain==null) ? "" : ("; domain="+domain))+'."\n";
-  }
-  else {
-    $js .= '("; domain='. $cookie_domain .'")+'."\n";
-  }
-  $js .= '((secure==true) ? "; secure" : "");}'."\n";
-
-  $js .= 'if (ReadCookie("'. variable_get('disclaimer_cookie_name', 'disclaimerShow') .'") == null) {';  $js .= '$(document).ready(function(){';
-  switch ($modal) {
-    case 'nyroModal':
-      $js .= '$.nyroModalManual({url:\''. url('disclaimer') .'\',modal:true, minWidth:'. $width .', minHeight:'. $height .', padding:'. $padding .', debug:'. $debug .', bgcolor:\'#'. $bgcolor .'\'});';
-      break;
-    case 'jqModal':
-      $js .= '$(\'#disclaimer\').jqm({ajax:\''. url('disclaimer') .'\', overlay:'. $overlay .', modal:true}).jqmShow();';
-      break;
-    case 'thickbox':
-      $js .= 'tb_show(\'test\', \''. url('disclaimer', array('query' => array('modal' => 'true', 'height' => $height, 'width' => $width))) .'\')';
-      break;
-  }
-  $js .= '});}';
-  return $js;
 }
 
 /**
@@ -267,4 +182,3 @@ function disclaimer_age_form() {
   );
   return $form;
 }
-

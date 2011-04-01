@@ -10,28 +10,7 @@
 function disclaimer_install() {
   drupal_set_message(t('To configure your disclaimer. Go to the <a href="!url">disclaimer setting page</a>.', array('!url' => url('admin/settings/disclaimer'))));
 }
-/**
- * Implementation of hook_requirements().
- */
-function disclaimer_requirements($phase) {
-  $requirements = array();
-  $t = get_t();
-  switch ($phase) {
-    case 'install':
-    case 'runtime':
-      $path = drupal_get_path('module', 'disclaimer') .'/nyroModal/js/jquery.nyroModal.js';
-      $path2 = drupal_get_path('module', 'disclaimer') .'/jqModal/jqModal.js';
-      if (!file_exists($path) || !file_exists($path2) || !module_exist('thickbox')) {
-        $requirements['modal'] = array(
-          'title' => $t('Disclaimer module'),
-          'description' => $t('Please download and activate thickbox module or create "nyroModal" and/or "jqModal" folder in disclaimer module then follow INSTALL.txt instructions'),
-          'severity' => $phase == 'install' ? REQUIREMENT_WARNING : REQUIREMENT_ERROR,
-          'value' => $t('Activate thickbox or copy nyroModal or jqModal.'),
-        );
-      }
-  }
-  return $requirements;
-}
+
 /**
  * Implementation of hook_uninstall().
  */

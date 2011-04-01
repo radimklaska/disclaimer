@@ -2,60 +2,10 @@
 Disclaimer x.x-x.x, xxxx-xx-xx
 ------------------------------
 
-Disclaimer 6.x-1.x, xxxx-xx-xx
+Disclaimer 6.x-2.x, xxxx-xx-xx
 ------------------------------
 
-Disclaimer 6.x-1.1, 2009-05-30
+Disclaimer 6.x-2.0, 2011-01-01
 ------------------------------
-#471176 by ctalley5: Added age verification.
-#471908 by miacbi: Added disclaimer visibility, localization through node, enter url no redirect if empty.
-#476430 by LAN_DRUPAL_aka_...: Fixed Install.txt.
-Added some other feature : new jQuery modal plugin, jqModal very light.
-Added node selection for content and footer of the disclaimer.
-New file disclaimer.admin.inc.
-Minor correction.
-Updated README.txt.
-Updated disclaimer.pot.
-Updated fr.pot.
-
-Disclaimer 6.x-1.2, 2009-05-30
-------------------------------
-Fixed disclaimer.install bug
-
-Disclaimer 6.x-1.3, 2009-05-30
-------------------------------
-Wrong disclamer.install file on 1.2 release, sorry.
-Minor correction.
-
-Disclaimer 6.x-1.4, 2009-08-13
-------------------------------
-Minor correction.
-#498256 by RAFA3L: Updated page-disclaimer.tpl.php and INSTALL.txt.
-Updated CHANGELOG.txt.
-Updated uninstall variable_del().
-
-Disclaimer 6.x-1.5, 2009-08-17
-------------------------------
-Error on 1.4 CVS release, wrong files.
-
-Disclaimer 6.x-1.6, 2010-09-21
-------------------------------
-bug #917252: Error for image button option by willeaton: Correct files path.
-Correct error on jqModal.
-Correct check_markup() filter format to disable ckeck access.
-
-Disclaimer 6.x-1.7, 2010-09-21
-------------------------------
-bug #610192: Admin page permissions don't work by cpforbes: correct typo on menu access and default var.
-
-Disclaimer 6.x-1.8, 2011-01-05
-------------------------------
-fix bug #1015542: Disclaimer issue with anonymous user without access to input filter by rachellawson, already fixed on dev, ported.
-
-Disclaimer 6.x-1.9, 2011-01-05
-------------------------------
-Added thickbox module compatibility (http://drupal.org/node/996818#comment-3830116)
-Fix jqModal bug
-Added enter and exit file upload (usability)
-Update translation
-Update install.txt
+Added colorbox support.
+Remove jqModal and NyroModal support.

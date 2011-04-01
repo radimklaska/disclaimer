@@ -10,7 +10,9 @@ installing the disclaimer.module which uses the 'disclaimer' URL Alias by defaul
 
 CAUTION ON AGE VERIFICATION:
 
-If you set age form option to your disclaimer, delete cookie and see the modal from "admin/settings/disclaimer", age verification will not work, because of preview windows under modal and CheckAge() js function witch get id of elements.
+If you set age form option to your disclaimer, delete cookie and see the modal from 
+"admin/settings/disclaimer", age verification will not work, because of preview 
+windows under modal and CheckAge() js function witch get id of elements.
 
 *******************************************************************************************
 
@@ -19,15 +21,11 @@ Requirements
 
 This module require at least version 6.x of Drupal.
 This module require 
-Thickbox module (easy setup !) from
+Thickbox module 6.x-1 from
 http://drupal.org/project/thickbox
 - AND/OR -
-NyroModal jquery plugin 1.6.1+ from
-http://plugins.jquery.com/project/nyroModal
-- AND/OR -
-jqModal jquery plugin 2009.03.01 +r14+ from
-http://plugins.jquery.com/project/jqModal
-(up to date) http://dev.iceburg.net/jquery/jqModal/
+Colorbox module 6.x-1 from
+http://drupal.org/project/colorbox
 
 Installation
 ------------
@@ -35,52 +33,10 @@ Installation
 1. Copy the folder named 'disclaimer' and its contents to the modules directory
    of your Drupal installation (for example 'sites/all/modules/').
 
-   -- you can choose Modal script you will set --
-
-   -- if you choose thickbox --
-
-1.1. Download and install 'thickbox' module to the modules directory
+2. Download and install 'thickbox' and/or 'colorbox' module to the modules directory
    of your Drupal installation (for example 'sites/all/modules/').
-1.2. Go to 'admin/build/modules' and enable thickbox.
    
-   -- if you choose nyroModal --
-
-1.1. Download NyroModal archive (version 1.6.1+) at 
-   http://plugins.jquery.com/project/nyroModal
-
-1.2. Create nyroModal folder in disclaimer module
-   sites/all/modules/disclaimer/nyroModal
-
-1.3. Extract all NyroModal archive content in this folder.
-   so directory look likes:
-    disclaimer/nyroModal/js/
-    disclaimer/nyroModal/img/
-    disclaimer/nyroModal/styles/
-    
-    no need of php files given in NyroModal package.
-
-1.4. Rename one of the NyroModal script (packed recommended) on "disclaimer/nyromodal/js/" 
-   to "jquery.nyroModal.js"
-
-1.5. Module will use nyroModal.css, rename -full version if you need. Edit to your need.
-
-   -- if you choose jqModal --
-
-1.1. Download jqModal script (version 2009.03.01 +r14+) at 
-   http://plugins.jquery.com/project/jqModal
-   (up to date) http://dev.iceburg.net/jquery/jqModal/
-   Download jqModal css sample at
-   http://dev.iceburg.net/jquery/jqModal/
-
-1.2. Create jqModal folder in disclaimer module
-   sites/all/modules/disclaimer/jqModal
-
-1.3. Copy both js AND css files in this folder.
-   so directory look likes:
-    disclaimer/jqModal/jqModal.js
-    disclaimer/jqModal/jqModal.css
-
-  -- then --
+3. Go to 'admin/build/modules' and enable thickbox and/or colorbox.
 
 2. In order to get disclaimer with customizes regions (no sidebar, etc...), you 
   can set-up a tpl file. The better way is to copy your page.tpl.php file from
