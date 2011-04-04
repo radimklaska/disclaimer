@@ -10,13 +10,12 @@ if (ReadCookie("disclaimerShow") == null) {
         href:"/disclaimer",
         overlayClose:false,
         escKey:false,
-        onLoad:function(){$('#cboxClose').remove();},
-        // settings
         width: Drupal.settings.disclaimer.width,
         height: Drupal.settings.disclaimer.height,
         speed: Drupal.settings.disclaimer.speed,
         opacity: Drupal.settings.disclaimer.opacity,
         transition: Drupal.settings.disclaimer.transition,
+        onLoad:function(){$('#cboxClose').remove();}
       });
     } else if (modal == 'thickbox') {
       tb_show('', "/disclaimer?modal=true&height=" + Drupal.settings.disclaimer.height + "&width=" + Drupal.settings.disclaimer.width);
@@ -25,7 +24,7 @@ if (ReadCookie("disclaimerShow") == null) {
 }
 
 function getCookieVal(offset) {
-  var endstr  =document.cookie.indexOf (";", offset);
+  var endstr = document.cookie.indexOf (";", offset);
   if (endstr == -1) endstr = document.cookie.length;
   return unescape(document.cookie.substring(offset, endstr));
 }
