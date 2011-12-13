@@ -46,9 +46,11 @@ function disclaimer_init() {
     // settings
     $settings = array(
       // common
+      'url' => base_path() . 'disclaimer',
+      'content' => _disclaimer_get_content(),
       'modal' => variable_get('disclaimer_modal', 'thickbox'),
       'cookie_path' => variable_get('disclaimer_cookie_path', '/'),
-      'cookie_domain' => variable_get('disclaimer_cookie_domain', ''),
+      'cookie_domain' => variable_get('disclaimer_cookie_domain', NULL),
       'width' => variable_get('disclaimer_width', '400px'),
       'height' => variable_get('disclaimer_height', '300px'),
       // colorbox
@@ -56,6 +58,7 @@ function disclaimer_init() {
       'speed' => variable_get('disclaimer_speed', 350),
       'transition' => variable_get('disclaimer_transition', 'elastic'),
     );
+    dsm($settings);
     drupal_add_js(array('disclaimer' => $settings), 'setting');
     drupal_add_js(drupal_get_path('module', 'disclaimer') .'/disclaimer.js', 'module', variable_get('disclaimer_location_js', 'header'));
   }

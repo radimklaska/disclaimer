@@ -7,7 +7,8 @@ if (ReadCookie("disclaimerShow") == null) {
     var modal = Drupal.settings.disclaimer.modal;
     if (modal == 'colorbox') {
       $.colorbox({
-        href:"/disclaimer",
+        /*href:Drupal.settings.disclaimer.url,*/
+        html:Drupal.settings.disclaimer.content,
         overlayClose:false,
         escKey:false,
         width: Drupal.settings.disclaimer.width,
@@ -18,7 +19,7 @@ if (ReadCookie("disclaimerShow") == null) {
         onLoad:function(){$('#cboxClose').remove();}
       });
     } else if (modal == 'thickbox') {
-      tb_show('', "/disclaimer?modal=true&height=" + Drupal.settings.disclaimer.height + "&width=" + Drupal.settings.disclaimer.width);
+      tb_show('', Drupal.settings.disclaimer.url+"?modal=true&height=" + Drupal.settings.disclaimer.height + "&width=" + Drupal.settings.disclaimer.width);
     }
   });
 }
@@ -56,7 +57,7 @@ function WriteCookie(nom, valeur){
   document.cookie = nom + "=" + escape(valeur) +
   ((expires==null) ? "" : ("; expires=" + expires.toGMTString())) +
   ((path==null) ? "" : ("; path=" + path)) +
-  ((domain==null) ? "" : ("; domain="+domain))+
+  ((domain==null || domain=="") ? ("; domain="+document.domain) : ("; domain="+domain)) +
   ((secure==true) ? "; secure" : "");
 }
 
