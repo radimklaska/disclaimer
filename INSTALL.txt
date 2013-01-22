@@ -3,28 +3,19 @@ Warning
 -------
 In order to work, disclaimer need client has JAVASCRIPT ENABLED and ACCEPT COOKIE.
 
-IMPORTANT NOTE FOR THOSE USING PATH.MODULE (URL ALIAS):
+NOTICE ON AGE VERIFICATION:
 
-Please ensure you have no other pages setup with the URL ALIAS 'disclaimer' when 
-installing the disclaimer.module which uses the 'disclaimer' URL Alias by default.
-
-CAUTION ON AGE VERIFICATION:
-
-If you set age form option to your disclaimer, delete cookie and see the modal from "admin/settings/disclaimer", age verification will not work, because of preview windows under modal and CheckAge() js function witch get id of elements.
+If you set age form option to your disclaimer, delete cookie and see the modal from
+"admin/config/system/disclaimer", age verification will not work, because javascript is not
+loaded on admin pages.
 
 *******************************************************************************************
 
 Requirements
 ------------
 
-This module require at least version 6.x of Drupal.
-This module require 
-NyroModal jquery plugin 1.4.2+ from
-http://plugins.jquery.com/project/nyroModal
-- AND/OR -
-jqModal jquery plugin 2008.06.22-r12+ from
-http://plugins.jquery.com/project/jqModal
-(up to date) http://dev.iceburg.net/jquery/jqModal/
+This module require at least version 7.x of Drupal.
+This module require colorbox module 7.x-2.0+
 
 Installation
 ------------
@@ -32,64 +23,22 @@ Installation
 1. Copy the folder named 'disclaimer' and its contents to the modules directory
    of your Drupal installation (for example 'sites/all/modules/').
 
-   -- you can choose Modal script you will set --
-   -- if you choose nyroModal --
+2. Go to 'admin/build/modules' and enable disclaimer.
 
-2. Download NyroModal archive (version 1.4.2+) at 
-   http://plugins.jquery.com/project/nyroModal
-
-3. Create nyroModal folder in disclaimer module
-   sites/all/modules/disclaimer/nyroModal
-
-4. Extract all NyroModal archive content in this folder.
-   so directory look likes:
-    disclaimer/nyroModal/js/
-    disclaimer/nyroModal/img/
-    disclaimer/nyroModal/styles/
-    
-    no need of php files given in NyroModal package.
-
-5. Rename one of the NyroModal script (packed recommended) on "disclaimer/nyromodal/js/" 
-   to "jquery.nyroModal.js"
-
-6. Module will use nyroModal.css, rename -full version if you need. Edit to your need.
-
-   -- if you choose jqModal --
-
-7. Download jqModal script (version 2008.06.22-r12+) at 
-   http://plugins.jquery.com/project/jqModal
-   (up to date) http://dev.iceburg.net/jquery/jqModal/
-   Download jqModal css sample at
-   http://dev.iceburg.net/jquery/jqModal/
-
-8. Create jqModal folder in disclaimer module
-   sites/all/modules/disclaimer/jqModal
-
-9. Copy both js AND css files in this folder.
-   so directory look likes:
-    disclaimer/jqModal/jqModal.js
-    disclaimer/jqModal/jqModal.css
-
-  -- then --
-
-10. In order to get disclaimer with customizes regions (no sidebar, etc...), you 
-  can set-up a tpl file. The better way is to copy your page.tpl.php file from
-  your theme directory, rename it page-disclaimer.tpl.php and edit to your need
-  to delete sidebar zones. 
-  There is a sample page-disclaimer.tpl.php file in disclaimer module made from
-  GARLAND theme. It can produce error on other themes.
-
-11. Go to 'admin/build/modules' and enable disclaimer.
-
-12. Go to 'admin/settings/disclaimer' and edit option and content for the disclaimer
+3. Go to 'admin/config/system/disclaimer' and edit option and content for the disclaimer
    to your need.
+
+Test
+------------
+
+You can use firefox/firebug to see and delete cookie "disclaimerShow".
 
 *******************************************************************************************
 
-This module has been developed by Mog for arthur-com.net
+This module has been developed by mogtofu33 (Jean V)
 
-Post a message on the drupal.org site if you have any ideas on 
+Post a message on the drupal.org site if you have any ideas on
 how we can improve the module.
 
-Mog.
-tech@arthura.fr
+Jean
+contact@developpeur-drupal.com

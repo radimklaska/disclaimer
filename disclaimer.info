@@ -1,10 +1,11 @@
 name = Disclaimer
-description = A nice lightbox disclaimer.
+description = A colorbox disclaimer to add splash on your website.
 
 core = 7.x
 project = "disclaimer"
 
+configure = admin/config/system/disclaimer
+
+dependencies[] = colorbox
+
 files[] = disclaimer.admin.inc
-files[] = disclaimer.install
-files[] = disclaimer.module
-files[] = page-disclaimer.tpl.php
