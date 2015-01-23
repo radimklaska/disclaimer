@@ -31,34 +31,36 @@ function disclaimer_menu() {
 }
 
 /**
- * Implements hook_init().
+ * Implements hook_page_build().
  */
-function disclaimer_init() {
-  // check if needed
-  if (disclaimer_show()) {
-    // disclaimer settings
-    $settings['disclaimer'] = array(
-      // content
-      'content' => _disclaimer_get_content(),
-      // cookie
-      'cookie_name' => variable_get('disclaimer_cookie_name', 'disclaimerShow'),
-      'cookie_path' => variable_get('disclaimer_cookie_path', '/'),
-      // colorbox
-      'width' => variable_get('disclaimer_width', '80%'),
-      'height' => variable_get('disclaimer_height', '80%'),
-      'initialwidth' => variable_get('disclaimer_initialwidth', '300'),
-      'initialheight' => variable_get('disclaimer_initialheight', '250'),
-      // age form
-      'ageform' => variable_get('disclaimer_age_form', 0),
-      'limit' => variable_get('disclaimer_age_limit', 18),
-      'exiturl' => variable_get('disclaimer_exit_url', 'http://www.google.com'),
-    );
-    // load cookie library
-    drupal_add_library('system', 'jquery.cookie');
-    // add javascript
-    drupal_add_js($settings, 'setting');
-    drupal_add_js(drupal_get_path('module', 'disclaimer') . '/disclaimer.js', array('scope' => 'footer'));
+function disclaimer_page_build(&$page) {
+  if (!disclaimer_show()) {
+    return;
   }
+  // Add disclaimer content on page.
+  $page['footer']['disclaimer'] = array(
+    '#markup' => _disclaimer_build_content(),
+  );
+}
+
+/**
+ * Add needed js settings.
+ */
+function _disclaimer_js_settings() {
+  $settings['disclaimer'] = array(
+    'cookie_name' => variable_get('disclaimer_cookie_name', 'disclaimerShow'),
+    'cookie_path' => variable_get('disclaimer_cookie_path', '/'),
+    'cookie_domain' => variable_get('disclaimer_cookie_domain', $_SERVER['SERVER_NAME']),
+    // Colorbox settings.
+    'width' => variable_get('disclaimer_width', '80%'),
+    'height' => variable_get('disclaimer_height', '80%'),
+    'initialwidth' => variable_get('disclaimer_initialwidth', '300'),
+    'initialheight' => variable_get('disclaimer_initialheight', '250'),
+    'ageform' => variable_get('disclaimer_age_form', 0),
+    'limit' => variable_get('disclaimer_age_limit', 18),
+    'exiturl' => variable_get('disclaimer_exit_url', 'http://www.google.com'),
+  );
+  drupal_add_js($settings, 'setting');
 }
 
 /**
@@ -67,27 +69,35 @@ function disclaimer_init() {
 function disclaimer_permission() {
   return array(
     'administer disclaimer settings' => array(
-      'title' => t('administer disclaimer settings'),
-      'description' => t('Full administration access, only for admin.'),
+      'title' => t('Administer disclaimer settings'),
+      'description' => t('Full disclaimer administration access.'),
     ),
     'bypass disclaimer' => array(
-      'title' => t('bypass disclaimer'),
-      'description' => t('If you want to hide disclaimer by roles.'),
+      'title' => t('Bypass disclaimer'),
+      'description' => t('Hide disclaimer depending by roles.'),
     ),
   );
 }
 
 /**
- * Function to control dislaimer display depending user and accesses.
+ * Function to control disclaimer display depending user and accesses.
  *
- * @return bool
- *   True if must be shown
+ * @return boolean
+ *   True if must be shown.
  */
 function disclaimer_show() {
   global $user;
-  // config and user access
-  if ((!user_access('bypass disclaimer')
-    || (variable_get('disclaimer_logged', 1) == 1 && $user->uid))
+
+  // Cookie override.
+  if (isset($_COOKIE['disclaimerShow'])) {
+    return FALSE;
+  }
+  // Visibility by roles override.
+  if (user_access('bypass disclaimer')) {
+    return FALSE;
+  }
+  // Configuration and user access.
+  if ((variable_get('disclaimer_logged', 1) == 1 && $user->uid >= 0)
     && (_disclaimer_visibility() == 1)) {
     return TRUE;
   }
@@ -97,36 +107,41 @@ function disclaimer_show() {
 /**
  * Generate disclaimer content.
  *
+ * @param bool $hide
+ *   Default style dsplay hidden.
+ *
  * @return string
  *   Html content rendered.
  */
-function _disclaimer_get_content() {
-  $output = '';
+function _disclaimer_build_content($hidden = TRUE) {
+  // Load cookie library.
+  drupal_add_library('system', 'jquery.cookie');
+
+  // Build renderable array.
+  $render_array = array(
+    '#theme' => 'disclaimer',
+    '#hidden' => $hidden,
+  );
   $exit_url = variable_get('disclaimer_exit_url', 'http://www.google.com');
   $enter_url = variable_get('disclaimer_enter_url', '');
 
-  // build button form depending settings
+  // Build button form depending settings.
   if (variable_get('disclaimer_action_type', 'text') == 'image') {
-    // images
     $enter = _disclaimer_render_image();
     $exit = _disclaimer_render_image('exit');
   }
   else {
-    // text
     $enter = variable_get('disclaimer_enter_txt', t('ENTER'));
     $exit = variable_get('disclaimer_exit_txt', t('EXIT'));
   }
 
-  // Check age form
+  // Check age form.
   if (variable_get('disclaimer_age_form', 0) == 1) {
     $age_form = drupal_get_form('disclaimer_age_form');
-    $rows[] = array(
-        array('data' => $age_form, 'align' => 'center', 'colspan' => '2')
-      );
-    //$script .= "$.CheckAge('" . variable_get('disclaimer_cookie_name', 'disclaimerShow') . "', " . variable_get('disclaimer_age_limit', 18) . ", '" . $exit_url . "');";
+    $render_array['#age_form'] = render($age_form);
   }
 
-  // enter redirect or not
+  // Enter redirect or not.
   if ($enter_url) {
     $enter = l($enter, $enter_url, array('html' => TRUE, 'attributes' => array('id' => 'disclaimer_enter')));
   }
@@ -135,20 +150,26 @@ function _disclaimer_get_content() {
   }
   $exit = l($exit, $exit_url, array('html' => TRUE));
 
-  // main content
-  $output .= _disclaimer_render_content();
+  // Show main content.
+  $render_array['#content'] = _disclaimer_render_content();
 
-  // button output in a table
-  $rows[] = array(
-    array('data' => $enter, 'align' => 'center'),
-    array('data' => $exit, 'align' => 'center'),
-  );
-  $output .= theme('table', array('header' => array(), 'rows' => $rows));
+  // Buttons render.
+  $render_array['#enter_link'] = $enter;
+  $render_array['#exit_link'] = $exit;
 
-  // footer content
-  $output .= _disclaimer_render_content('footer');
+  // Footer content.
+  $render_array['#footer'] = _disclaimer_render_content('footer');
 
-  return $output;
+  // Add minimal css.
+  if (variable_get('disclaimer_css', 1) == 1) {
+    drupal_add_css(drupal_get_path('module', 'disclaimer') . '/disclaimer.css');
+  }
+  // Add settings.
+  _disclaimer_js_settings();
+  // Add js.
+  drupal_add_js(drupal_get_path('module', 'disclaimer') . '/disclaimer.js', array('scope' => 'footer'));
+
+  return render($render_array);
 }
 
 /**
@@ -169,13 +190,14 @@ function _disclaimer_render_image($key = 'enter') {
     $alt = t('EXIT');
   }
   $variables['alt'] = $variables['title'] = variable_get('disclaimer_' . $key . '_img_alt', $alt);
-  // get file image
+  // Get file image
   $file = file_load(variable_get('disclaimer_' . $key . '_img'));
   if ($file) {
     $variables['path'] = $file->uri;
     if (variable_get('disclaimer_' . $key . '_img_style') != "") {
       $variables['style_name'] = variable_get('disclaimer_' . $key . '_img_style');
-      //$variables['attributes'] = ''; // avoid php notice
+      // Avoid php notice.
+      //$variables['attributes'] = '';
       $image = theme('image_style', $variables);
     }
     else {
@@ -228,7 +250,7 @@ function _disclaimer_render_button($key = 'enter') {
  * Helper to build top and bottom render.
  *
  * @param string $zone
- *   Dynamicaly build content depending on zone, footer or top.
+ *   Dynamically build content depending place, footer or top.
  *
  * @return string
  *   Html content rendered.
@@ -261,7 +283,7 @@ function _disclaimer_render_content($zone = '') {
 
 /**
  * Calculate visibility of disclaimer if set.
- * function copy from block.module, thanks for the original code.
+ * This is a copy from block.module (~807), thanks for the original code.
  *
  * @return boolean
  */
@@ -298,7 +320,7 @@ function _disclaimer_visibility() {
  * Function to set age form on disclaimer.
  *
  * @return array
- *   an array of forms
+ *   An array of forms.
  */
 function disclaimer_age_form($form) {
   $form['disclaimer_age'] = array(
@@ -313,10 +335,10 @@ function disclaimer_age_form($form) {
  * Autocomplete helper for nodes search.
  *
  * @param text $string
- *   string for search
+ *   String for search.
  *
  * @return json
- *   search result
+ *   Search result.
  */
 function _disclaimer_node_autocomplete($string = "") {
   $matches = array();
@@ -331,6 +353,25 @@ function _disclaimer_node_autocomplete($string = "") {
     }
   }
 
-  // Return the result to the form in json
+  // Return the result to the form in json.
   drupal_json_output($matches);
+}
+
+/**
+ * Implements hook_theme().
+ */
+function disclaimer_theme(){
+  return array(
+    'disclaimer' => array(
+      'variables' => array(
+        'hidden' => NULL,
+        'enter_link' => NULL,
+        'exit_link' => NULL,
+        'content' => NULL,
+        'footer' => NULL,
+        'age_form' => NULL,
+      ),
+      'template' => 'disclaimer',
+    ),
+  );
 }

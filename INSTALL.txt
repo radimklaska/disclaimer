@@ -1,21 +1,16 @@
-*******************************************************************************************
-Warning
--------
-In order to work, disclaimer need client has JAVASCRIPT ENABLED and ACCEPT COOKIE.
+********************************************************************************
+This module add a disclaimer to your website using Colorbox module with
+configurable actions.
 
-NOTICE ON AGE VERIFICATION:
+Visitors need javascript and cookie enabled.
 
-If you set age form option to your disclaimer, delete cookie and see the modal from
-"admin/config/system/disclaimer", age verification will not work, because javascript is not
-loaded on admin pages.
-
-*******************************************************************************************
+********************************************************************************
 
 Requirements
 ------------
 
 This module require at least version 7.x of Drupal.
-This module require colorbox module 7.x-2.0+
+This module require Colorbox module 7.x-2.8+
 
 Installation
 ------------
@@ -25,15 +20,34 @@ Installation
 
 2. Go to 'admin/build/modules' and enable disclaimer.
 
-3. Go to 'admin/config/system/disclaimer' and edit option and content for the disclaimer
-   to your need.
+3. Check your status to be sure Colorbox is properly installed
+   (admin/reports/status).
+
+4. Go to 'admin/config/system/disclaimer' and edit option and content for the
+   disclaimer to your need.
+
+Theming
+-------
+
+Use disclaimer.tpl.php file in your theme to override disclaimer structure.
+
+Other settings
+--------------
+
+Disclaimer box designed is the colorbox one and is set from colorbox settings
+page.
+Age form format is set to the "Short" format of your date settings:
+admin/config/regional/date-time
 
 Test
-------------
+----
 
-You can use firefox/firebug to see and delete cookie "disclaimerShow".
+Due to user access, disclaimer is never shown to administrator, logout to test
+disclaimer.
+You can see and delete cookie "disclaimerShow" once clicked. Use development
+tools of your browser.
 
-*******************************************************************************************
+********************************************************************************
 
 This module has been developed by mogtofu33 (Jean V)
 

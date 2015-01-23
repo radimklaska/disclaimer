@@ -1,81 +1,68 @@
-(function ($, Drupal) {
 
+(function ($) {
   /**
-   * Check cookie to display disclaimer
+   * Colorbox trigger does not work with behaviors (infinite loop), we use
+   * standard document ready.
    */
   if ($.cookie("disclaimerShow") == null) {
-    /**
-     * Colorbox trigger, does not work (loop) if attached on behaviors
-     * so we use old document ready.
-     */
     $(document).ready(function(){
-      // prevent colorbox error
+      // Prevent colorbox error.
       if (!$.isFunction($.colorbox)) {
         return;
       }
-      // launch colorbox
+      var conf = Drupal.settings.disclaimer;
+      // Launch colorbox.
       $.colorbox({
-        html:Drupal.settings.disclaimer.content,
-        width:Drupal.settings.disclaimer.width,
-        height:Drupal.settings.disclaimer.height,
-        initialWidth:Drupal.settings.disclaimer.initialwidth,
-        initialHeight:Drupal.settings.disclaimer.initialheight,
-        // no esc or close on click
+        inline:true,
+        href:"#disclaimer",
+        width:conf.width,
+        height:conf.height,
+        initialWidth:conf.initialwidth,
+        initialHeight:conf.initialheight,
+        // No esc or close on click.
         overlayClose:false,
         escKey:false,
-        // remove close button
-        onLoad:function(){$('#cboxClose').remove();}
+        onLoad:function(){
+          // Remove close button.
+          $('#cboxClose').remove();
+          // Bind click action
+          $('#disclaimer_enter').click(function () {
+            var close = true;
+            // Age form is set, check age.
+            if (conf.ageform == 1) {
+              close = false;
+              var now = new Date();
+              var date = now.getDate();
+              var month = now.getMonth() + 1;
+              var year = now.getFullYear();
+              var optmonth = $("#edit-disclaimer-age-month option:selected").val();
+              var optday = $("#edit-disclaimer-age-day option:selected").val();
+              var optyear = $("#edit-disclaimer-age-year option:selected").val();
+              var age = year - optyear;
+              if (optmonth > month) {age--;} else {if(optmonth == month && optday >= date) {age--;}}
+              // If current year, form not set.
+              if (optyear == year) {
+                alert(Drupal.t("Please fill in your birth date."));
+              } else if (age < conf.limit) {
+                alert(Drupal.t("Sorry, you are under age limit and are prohibited from entering this site!"));
+                location.replace(conf.exiturl);
+              } else {
+                // Age limit ok.
+                close = true;
+              }
+            }
+            // Everything good, add cookie and close colorbox.
+            if (close) {
+              $.cookie(conf.cookie_name, '1', { 
+                path: conf.cookie_path, 
+                domain: conf.cookie_domain 
+              });
+              $.colorbox.remove();
+            }
+          });
+        }
       });
     });
-
-    /**
-     * Classic module behavior, handle enter button action
-     */
-    Drupal.behaviors.disclaimer = {
-      attach: function (context, settings) {
-        // action on enter button
-        $('#disclaimer_enter', context).click(function () {
-          var check = true;
-          // age form is set
-          if (settings.disclaimer.ageform == 1) {
-            var check = Drupal.checkAge();
-          }
-          // everything good, add cookie and close colorbox
-          if (check) {
-            $.cookie(settings.disclaimer.cookie_name, '1', { path: settings.disclaimer.cookie_path });
-            $.colorbox.remove();
-          }
-        });
-      },
-    };
   }
 
-  /**
-   * Control age limit.
-   */
-  Drupal.checkAge = function () {
-    var now = new Date();
-    var date = now.getDate();
-    var month = now.getMonth() + 1;
-    var year = now.getFullYear();
-    var optmonth = jQuery("#edit-disclaimer-age-month option:selected").val();
-    var optday = jQuery("#edit-disclaimer-age-day option:selected").val();
-    var optyear = jQuery("#edit-disclaimer-age-year option:selected").val();
-    var age = year - optyear;
-    if (optmonth > month) {age--;} else {if(optmonth == month && optday >= date) {age--;}}
-    // if current year, form not set
-    if (optyear == year) {
-      alert(Drupal.t("You must enter the year you were born in."));
-      return false;
-    // if under age, alert and redirect !
-    } else if (age < Drupal.settings.disclaimer.limit) {
-      alert(Drupal.t("Sorry, you are Under age limit and are prohibited from entering this site!"));
-      location.replace(Drupal.settings.disclaimer.exiturl);
-      return false;
-    } else {
-      // age limit ok
-      return true;
-    }
-  }
-
-}(jQuery, Drupal));
+}(jQuery));

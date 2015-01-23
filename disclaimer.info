@@ -1,5 +1,5 @@
 name = Disclaimer
-description = A colorbox disclaimer to add splash on your website.
+description = Disclaimer box on your website.
 
 core = 7.x
 project = "disclaimer"

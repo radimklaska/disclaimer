@@ -9,7 +9,7 @@
  */
 function disclaimer_install() {
   drupal_set_message(
-    st('To configure your disclaimer. Go to the <a href="!url">disclaimer setting page</a>.',
+    st('Please <a href="!url">configure your disclaimer</a>.',
     array('!url' => base_path() . 'admin/config/system/disclaimer'))
   );
 }
