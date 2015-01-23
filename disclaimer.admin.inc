@@ -245,7 +245,7 @@ function disclaimer_admin_settings() {
 }
 
 /**
- * Build content selection part of settings form
+ * Build content selection part of settings form.
  *
  * @return array
  *   An array of forms.

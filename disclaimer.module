@@ -282,6 +282,7 @@ function _disclaimer_render_content($zone = '') {
 
 /**
  * Calculate visibility of disclaimer if set.
+ *
  * This is a copy from block.module (~807), thanks for the original code.
  *
  * @return bool
@@ -337,7 +338,7 @@ function disclaimer_age_form($form) {
 /**
  * Autocomplete helper for nodes search.
  *
- * @param text $string
+ * @param string $string
  *   String for search.
  */
 function _disclaimer_node_autocomplete($string = "") {

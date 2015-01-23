@@ -1,6 +1,7 @@
 /**
  * Disclaimer module js file.
  */
+
 (function ($) {
   /* Colorbox trigger does not work with behaviors (infinite loop), we use
    standard document ready. */
@@ -25,7 +26,7 @@
         onLoad:function(){
           // Remove close button.
           $('#cboxClose').remove();
-          // Bind click action
+          // Bind click action.
           $('#disclaimer_enter').click(function () {
             var close = true;
             // Age form is set, check age.
