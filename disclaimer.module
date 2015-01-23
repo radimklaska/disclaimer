@@ -2,7 +2,6 @@
 /**
  * @file
  * Create and show disclaimer for your site.
- *
  */
 
 /**
@@ -10,14 +9,14 @@
  */
 function disclaimer_menu() {
   $items = array();
-  // Autocomplete search node
+  // Autocomplete search node.
   $items['node/autocomplete'] = array(
     'title' => 'Autocomplete for nodes',
     'page callback' => '_disclaimer_node_autocomplete',
     'access arguments' => array('administer disclaimer settings'),
-    'type' => MENU_CALLBACK
+    'type' => MENU_CALLBACK,
   );
-  // Disclaimer module settings
+  // Disclaimer module settings.
   $items['admin/config/system/disclaimer'] = array(
     'title' => 'Disclaimer',
     'description' => 'Administer Disclaimer settings.',
@@ -82,7 +81,7 @@ function disclaimer_permission() {
 /**
  * Function to control disclaimer display depending user and accesses.
  *
- * @return boolean
+ * @return bool
  *   True if must be shown.
  */
 function disclaimer_show() {
@@ -107,7 +106,7 @@ function disclaimer_show() {
 /**
  * Generate disclaimer content.
  *
- * @param bool $hide
+ * @param bool $hidden
  *   Default style dsplay hidden.
  *
  * @return string
@@ -190,14 +189,14 @@ function _disclaimer_render_image($key = 'enter') {
     $alt = t('EXIT');
   }
   $variables['alt'] = $variables['title'] = variable_get('disclaimer_' . $key . '_img_alt', $alt);
-  // Get file image
+  // Get file image.
   $file = file_load(variable_get('disclaimer_' . $key . '_img'));
   if ($file) {
     $variables['path'] = $file->uri;
     if (variable_get('disclaimer_' . $key . '_img_style') != "") {
       $variables['style_name'] = variable_get('disclaimer_' . $key . '_img_style');
       // Avoid php notice.
-      //$variables['attributes'] = '';
+      // $variables['attributes'] = '';
       $image = theme('image_style', $variables);
     }
     else {
@@ -285,7 +284,8 @@ function _disclaimer_render_content($zone = '') {
  * Calculate visibility of disclaimer if set.
  * This is a copy from block.module (~807), thanks for the original code.
  *
- * @return boolean
+ * @return bool
+ *   Page match or not.
  */
 function _disclaimer_visibility() {
   $visibility = variable_get('disclaimer_visibility', 0);
@@ -294,7 +294,7 @@ function _disclaimer_visibility() {
   // with different case. Ex: /Page, /page, /PAGE.
   $pages = drupal_strtolower($pages);
   if ($visibility < 2) {
-    // Convert the Drupal path to lowercase
+    // Convert the Drupal path to lowercase.
     $path = drupal_strtolower(drupal_get_path_alias($_GET['q']));
     // Compare the lowercase internal and lowercase path alias (if any).
     $page_match = drupal_match_path($path, $pages);
@@ -326,7 +326,10 @@ function disclaimer_age_form($form) {
   $form['disclaimer_age'] = array(
     '#type' => 'date',
     '#title' => t('Date of Birth'),
-    '#description' => t('You must be at least @age years old to visit @site.', array('@age' => variable_get('disclaimer_age_limit', 18), '@site' => variable_get('site_name', ''))),
+    '#description' => t('You must be at least @age years old to visit @site.', array(
+      '@age' => variable_get('disclaimer_age_limit', 18),
+      '@site' => variable_get('site_name', '')
+    )),
   );
   return $form;
 }
@@ -336,9 +339,6 @@ function disclaimer_age_form($form) {
  *
  * @param text $string
  *   String for search.
- *
- * @return json
- *   Search result.
  */
 function _disclaimer_node_autocomplete($string = "") {
   $matches = array();
@@ -360,7 +360,7 @@ function _disclaimer_node_autocomplete($string = "") {
 /**
  * Implements hook_theme().
  */
-function disclaimer_theme(){
+function disclaimer_theme() {
   return array(
     'disclaimer' => array(
       'variables' => array(

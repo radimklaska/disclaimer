@@ -1,9 +1,8 @@
-
 #disclaimer .enter,
 #disclaimer .exit {
   padding: 10px 0;
   width: 50%;
-  float:left;
+  float: left;
   text-align: center;
 }
 #disclaimer .age {

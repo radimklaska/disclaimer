@@ -2,10 +2,7 @@ name = Disclaimer
 description = Disclaimer box on your website.
 
 core = 7.x
-project = "disclaimer"
 
 configure = admin/config/system/disclaimer
 
 dependencies[] = colorbox
-
-files[] = disclaimer.admin.inc

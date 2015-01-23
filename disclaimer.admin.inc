@@ -3,10 +3,9 @@
 /**
  * @file
  * Admin page callbacks for the Disclaimer module.
- *
  */
 
-/*
+/**
  * Admin settings form for Disclaimer.
  */
 function disclaimer_admin_settings() {
@@ -64,19 +63,19 @@ function disclaimer_admin_settings() {
     ),
   );
   $form['action']['disclaimer_visibility'] = array(
-      '#type' => 'radios',
-      '#title' => t('Show disclaimer on specific pages'),
-      '#options' => array(
-        t('Show disclaimer on every page except the listed pages.'),
-        t('Show disclaimer on only the listed pages.'),
-      ),
-      '#default_value' => variable_get('disclaimer_visibility', 0),
+    '#type' => 'radios',
+    '#title' => t('Show disclaimer on specific pages'),
+    '#options' => array(
+      t('Show disclaimer on every page except the listed pages.'),
+      t('Show disclaimer on only the listed pages.'),
+    ),
+    '#default_value' => variable_get('disclaimer_visibility', 0),
   );
   $form['action']['disclaimer_pages'] = array(
-      '#type' => 'textarea',
-      '#title' => t('Disclaimer specific pages'),
-      '#default_value' => variable_get('disclaimer_pages', "admin/*\nuser"),
-      '#description' => t("Enter one page per line as Drupal paths. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>')),
+    '#type' => 'textarea',
+    '#title' => t('Disclaimer specific pages'),
+    '#default_value' => variable_get('disclaimer_pages', "admin/*\nuser"),
+    '#description' => t("Enter one page per line as Drupal paths. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>')),
   );
   $form['style'] = array(
     '#type' => 'fieldset',
@@ -105,7 +104,7 @@ function disclaimer_admin_settings() {
       'name' => t('Exit'),
     ),
   );
-    // Build text setting.
+  // Build text setting.
   $form['style']['text'] = array(
     '#type' => 'container',
     '#states' => array(
@@ -114,7 +113,7 @@ function disclaimer_admin_settings() {
       ),
     ),
   );
-  foreach ($types AS $type) {
+  foreach ($types as $type) {
     $form['style']['text']['disclaimer_' . $type['id'] . '_txt'] = array(
       '#type' => 'textfield',
       '#title' => t('!name text', array('!name' => ucfirst($type['name']))),
@@ -134,7 +133,7 @@ function disclaimer_admin_settings() {
   );
   // Get image styles for options.
   $options = image_style_options();
-  foreach ($types AS $type) {
+  foreach ($types as $type) {
     $form['style']['img'][$type['id']] = array(
       '#type' => 'fieldset',
       '#collapsible' => FALSE,
@@ -245,7 +244,7 @@ function disclaimer_admin_settings() {
   return system_settings_form($form);
 }
 
-/*
+/**
  * Build content selection part of settings form
  *
  * @return array
@@ -256,7 +255,7 @@ function _disclaimer_content_selection($zone = 'content') {
   $default = '';
   // Get all view modes.
   $entity_info = entity_get_info('node');
-  foreach ($entity_info['view modes'] AS $key => $view_mode) {
+  foreach ($entity_info['view modes'] as $key => $view_mode) {
     $options[$key] = $view_mode['label'];
   }
 

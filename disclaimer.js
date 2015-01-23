@@ -1,9 +1,9 @@
-
+/**
+ * Disclaimer module js file.
+ */
 (function ($) {
-  /**
-   * Colorbox trigger does not work with behaviors (infinite loop), we use
-   * standard document ready.
-   */
+  /* Colorbox trigger does not work with behaviors (infinite loop), we use
+   standard document ready. */
   if ($.cookie("disclaimerShow") == null) {
     $(document).ready(function(){
       // Prevent colorbox error.
@@ -53,9 +53,9 @@
             }
             // Everything good, add cookie and close colorbox.
             if (close) {
-              $.cookie(conf.cookie_name, '1', { 
-                path: conf.cookie_path, 
-                domain: conf.cookie_domain 
+              $.cookie(conf.cookie_name, '1', {
+                path: conf.cookie_path,
+                domain: conf.cookie_domain
               });
               $.colorbox.remove();
             }

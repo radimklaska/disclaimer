@@ -5,11 +5,12 @@
  */
 
 /**
- * Create tables on install
+ * Create tables on install.
  */
 function disclaimer_install() {
+  $t = get_t();
   drupal_set_message(
-    st('Please <a href="!url">configure your disclaimer</a>.',
+    $t('Please <a href="!url">configure your disclaimer</a>.',
     array('!url' => base_path() . 'admin/config/system/disclaimer'))
   );
 }
@@ -18,7 +19,7 @@ function disclaimer_install() {
  * Implements hook_uninstall().
  */
 function disclaimer_uninstall() {
-  // Delete all global variables
+  // Delete all global variables.
   db_delete('variable')
     ->condition('name', 'disclaimer_%', 'LIKE')
     ->execute();
