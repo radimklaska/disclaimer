@@ -145,7 +145,7 @@ function _disclaimer_build_content($hidden = TRUE) {
     $enter = l($enter, $enter_url, array('html' => TRUE, 'attributes' => array('id' => 'disclaimer_enter')));
   }
   else {
-    $enter = '<a href="javascript:void(0);" id="disclaimer_enter">' . $enter . '</a>';
+    $enter = '<a href="#" id="disclaimer_enter">' . $enter . '</a>';
   }
   $exit = l($exit, $exit_url, array('html' => TRUE));
 

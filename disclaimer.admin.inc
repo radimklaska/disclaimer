@@ -241,6 +241,7 @@ function disclaimer_admin_settings() {
     '#description' => t('Set the cookie domain. Default is current server domain.'),
     '#required' => TRUE,
   );
+  $form['#submit'][] = 'disclaimer_admin_settings_submit';
   return system_settings_form($form);
 }
 
@@ -376,6 +377,23 @@ function disclaimer_admin_settings_validate($form, &$form_state) {
     if (!isset($form_state['values']['disclaimer_exit_img']) || $form_state['values']['disclaimer_exit_img'] == 0) {
       form_set_error('disclaimer_exit_img', t('Please select an image to upload.'));
     }
+  }
+}
+
+/**
+ * Validation function for the general configuration form.
+ */
+function disclaimer_admin_settings_submit($form, &$form_state) {
+  // Set file image permanent
+  if ($form_state['values']['disclaimer_action_type'] == 'image') {
+    $file = file_load($form_state['values']['disclaimer_enter_img']);
+    $file->status = FILE_STATUS_PERMANENT;
+    file_save($file);
+    file_usage_add($file, 'disclaimer', 'enter_img', 1);
+    $file = file_load($form_state['values']['disclaimer_exit_img']);
+    $file->status = FILE_STATUS_PERMANENT;
+    file_save($file);
+    file_usage_add($file, 'disclaimer', 'exit_img', 1);
   }
 }
 
