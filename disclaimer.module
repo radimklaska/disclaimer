@@ -36,10 +36,19 @@ function disclaimer_page_build(&$page) {
   if (!disclaimer_show()) {
     return;
   }
-  // Add disclaimer content on page.
-  $page['footer']['disclaimer'] = array(
-    '#markup' => _disclaimer_build_content(),
-  );
+  $current_theme = variable_get('theme_default', NULL);
+  if ($current_theme) {
+    $regions = system_region_list($current_theme, REGIONS_VISIBLE);
+    end($regions);
+    $key = key($regions);
+    // Add disclaimer content on page.
+    $page[$key]['disclaimer'] = array(
+      '#markup' => _disclaimer_build_content(),
+    );
+  }
+  else {
+    watchdog('disclaimer', 'Can not get current theme, please ensure default theme is set.', array(), WATCHDOG_ALERT);
+  }
 }
 
 /**
