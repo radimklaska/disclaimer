@@ -36,18 +36,11 @@ function disclaimer_page_build(&$page) {
   if (!disclaimer_show()) {
     return;
   }
-  $current_theme = variable_get('theme_default', NULL);
-  if ($current_theme) {
-    $regions = system_region_list($current_theme, REGIONS_VISIBLE);
-    end($regions);
-    $key = key($regions);
+  if ($key = variable_get('disclaimer_region', NULL)) {
     // Add disclaimer content on page.
     $page[$key]['disclaimer'] = array(
       '#markup' => _disclaimer_build_content(),
     );
-  }
-  else {
-    watchdog('disclaimer', 'Can not get current theme, please ensure default theme is set.', array(), WATCHDOG_ALERT);
   }
 }
 

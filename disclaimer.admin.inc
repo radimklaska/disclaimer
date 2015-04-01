@@ -9,6 +9,17 @@
  * Admin settings form for Disclaimer.
  */
 function disclaimer_admin_settings() {
+  $current_theme = variable_get('theme_default', NULL);
+  $regions = system_region_list($current_theme, REGIONS_VISIBLE);
+  if (!isset($regions['footer'])) {
+    $form['disclaimer_region'] = array(
+      '#type' => 'select',
+      '#title' => t('Theme region'),
+      '#options' => $regions,
+      '#default_value' => variable_get('disclaimer_region', ''),
+      '#description' => t('Choose theme region to handle disclaimer content, best is last visible region like footer or bottom.'),
+    );
+  }
   $form['disclaimer_preview'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,

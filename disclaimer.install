@@ -24,3 +24,25 @@ function disclaimer_uninstall() {
     ->condition('name', 'disclaimer_%', 'LIKE')
     ->execute();
 }
+
+/**
+ * Implements hook_requirements().
+ */
+function disclaimer_requirements($phase) {
+  $requirements = array();
+  $t = get_t();
+  $current_theme = variable_get('theme_default', NULL);
+  $regions = system_region_list($current_theme, REGIONS_VISIBLE);
+  if ($phase == 'install' && isset($regions['footer'])) {
+    variable_set('disclaimer_region', 'footer');
+  }
+  elseif ($phase == 'runtime' && !isset($regions['footer'])) {
+    $requirements['disclaimer'] = array(
+      'title' => $t('Disclaimer content'),
+      'description' => $t('Please <a href="!url">select a theme region</a> to handle disclaimer content.', array('!url' => url('admin/config/system/disclaimer'))),
+      'value' => $t('Region footer missing'),
+      'severity' => REQUIREMENT_ERROR,
+    );
+  }
+  return $requirements;
+}
