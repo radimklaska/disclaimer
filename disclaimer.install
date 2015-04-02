@@ -46,3 +46,14 @@ function disclaimer_requirements($phase) {
   }
   return $requirements;
 }
+
+/**
+ * Set default region footer to handle disclaimer content.
+ */
+function disclaimer_update_7100(&$sandbox) {
+  $current_theme = variable_get('theme_default', NULL);
+  $regions = system_region_list($current_theme, REGIONS_VISIBLE);
+  if (isset($regions['footer'])) {
+    variable_set('disclaimer_region', 'footer');
+  }
+}
