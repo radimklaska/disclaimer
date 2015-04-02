@@ -11,7 +11,8 @@
 function disclaimer_admin_settings() {
   $current_theme = variable_get('theme_default', NULL);
   $regions = system_region_list($current_theme, REGIONS_VISIBLE);
-  if (!isset($regions['footer'])) {
+  $key = variable_get('disclaimer_region', NULL);
+  if (!isset($regions['footer']) || !$key) {
     $form['disclaimer_region'] = array(
       '#type' => 'select',
       '#title' => t('Theme region'),
