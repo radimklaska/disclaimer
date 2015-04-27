@@ -98,8 +98,8 @@ function disclaimer_show() {
     return FALSE;
   }
   // Configuration and user access.
-  if ((variable_get('disclaimer_logged', 1) == 1 && $user->uid >= 0)
-    && (_disclaimer_visibility() == 1)) {
+  if (($user->uid == 0 || (variable_get('disclaimer_logged', 1) == 1 && $user->uid >= 0))
+      && (_disclaimer_visibility() == 1)) {
     return TRUE;
   }
   return FALSE;
