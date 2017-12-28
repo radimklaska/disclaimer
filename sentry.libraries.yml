@@ -1,0 +1,7 @@
+sentry:
+  version: 1.x
+  js:
+    js/sentry.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.ui
