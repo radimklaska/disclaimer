@@ -14,7 +14,7 @@
                 // Skip popup in case cookie says user already agreed.
                 if ($.cookie(key) != 1) {
                     // User did not agreed yet. Show popup.
-                    $('.block-sentry-block.' + key + ' .challenge', context).dialog({
+                    $('.block-sentry-block.' + key + ' .sentry__challenge', context).dialog({
                         closeOnEscape: false,
                         open: function (event, ui) {
                             $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();

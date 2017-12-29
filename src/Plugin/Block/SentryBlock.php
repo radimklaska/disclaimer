@@ -167,7 +167,7 @@ class SentryBlock extends BlockBase
             '#type' => 'container',
             '#attributes' => [
                 'class' => [
-                    'disclaimer',
+                    'sentry__disclaimer',
                 ],
             ],
             '#markup' => Html::escape($this->configuration['disclaimer']),
@@ -178,7 +178,7 @@ class SentryBlock extends BlockBase
             '#type' => 'container',
             '#attributes' => [
                 'class' => [
-                    'challenge',
+                    'sentry__challenge',
                     'hidden',
                 ],
                 'title' => [
