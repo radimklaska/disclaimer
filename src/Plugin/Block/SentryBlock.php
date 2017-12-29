@@ -158,7 +158,7 @@ class SentryBlock extends BlockBase
         // Pass settings to JS.
         $build['#attached']['drupalSettings']['sentry']['sentry']['sentry_' . Html::escape($this->configuration['machine_name'])] = [
             'challenge' => Html::escape($this->configuration['challenge']),
-            'redirect' => \Drupal::service('path.validator')->getUrlIfValid($this->configuration['redirect'])->toString(),
+            'redirect' => $this->configuration['redirect'],
             'max_age' => Html::escape($this->configuration['max_age']),
         ];
 
