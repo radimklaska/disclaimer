@@ -3,5 +3,7 @@ sentry:
   js:
     js/sentry.js: {}
   dependencies:
+    - core/drupal
     - core/jquery
     - core/jquery.ui
+    - core/jquery.cookie
