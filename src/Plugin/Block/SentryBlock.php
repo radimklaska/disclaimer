@@ -39,7 +39,7 @@ class SentryBlock extends BlockBase {
    */
   public function defaultConfiguration() {
     return [
-      'machine_name' => $this->t(''),
+      'machine_name' => $this->t('sentry_block' . time()),
       'challenge' => $this->t(''),
       'disclaimer' => $this->t(''),
       'redirect' => $this->t('/'),
@@ -57,15 +57,6 @@ class SentryBlock extends BlockBase {
     //        foreach ($filter_formats as $filter_format) {
     //            $filter_formats_form[$filter_format->id()] = $filter_format->label();
     //        }
-    $form['machine_name'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Machine name'),
-      '#description' => $this->t('Used as ID in cookies.'),
-      '#default_value' => $this->configuration['machine_name'],
-      '#maxlength' => 64,
-      '#size' => 64,
-      '#weight' => '10',
-    ];
     $form['challenge'] = [
       // '#type' => 'text_format',
       //            '#format' => $filter_formats_form,.
@@ -108,7 +99,7 @@ class SentryBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
-    $this->configuration['machine_name'] = $form_state->getValue('machine_name');
+    $this->configuration['machine_name'] = $form_state->getCompleteFormState()->getValue('id');
     $this->configuration['challenge'] = $form_state->getValue('challenge');
     $this->configuration['disclaimer'] = $form_state->getValue('disclaimer');
     $this->configuration['redirect'] = $form_state->getValue('redirect');
@@ -124,9 +115,6 @@ class SentryBlock extends BlockBase {
 
     if (!$url_object) {
       $form_state->setErrorByName('redirect', $this->t('Redirect URL must be valid path.'));
-    }
-    if (!preg_match('/^[a-zA-Z0-9_]+$/', $form_state->getValue('machine_name'))) {
-      $form_state->setErrorByName('machine_name', $this->t('Machine name must contain only letters, numbers and underscores.'));
     }
     if (!preg_match('/^[0-9]+$/', $form_state->getValue('max_age'))) {
       $form_state->setErrorByName('max_age', $this->t('Max-age must be integer.'));
