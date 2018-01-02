@@ -4,6 +4,7 @@ sentry:
     js/sentry.js: {}
   dependencies:
     - core/drupal
+    - core/drupal.dialog
     - core/jquery
     - core/jquery.ui
     - core/jquery.cookie
