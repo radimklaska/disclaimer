@@ -64,6 +64,7 @@ class SentryBlock extends BlockBase {
       '#title' => $this->t('Challenge'),
       '#description' => $this->t('The question the user must confirm. "Do you agree?" type of question. "Yes" = User stays on requested page. "No" = User is redirected to <em>Redirect</em> url specified below.'),
       '#default_value' => $this->configuration['challenge'],
+      '#required' => TRUE,
       '#weight' => '20',
     ];
     $form['redirect'] = [
@@ -73,6 +74,7 @@ class SentryBlock extends BlockBase {
       '#default_value' => $this->configuration['redirect'],
       '#maxlength' => 256,
       '#size' => 64,
+      '#required' => TRUE,
       '#weight' => '30',
     ];
     $form['disclaimer'] = [
@@ -81,6 +83,7 @@ class SentryBlock extends BlockBase {
       '#description' => $this->t('The text displayed to the user on a protected page when the user has JS turned off. (No popup with challenge is available.)'),
       '#default_value' => $this->configuration['disclaimer'],
       '#weight' => '40',
+      '#required' => FALSE,
     ];
     $form['max_age'] = [
       '#type' => 'textfield',
@@ -89,6 +92,7 @@ class SentryBlock extends BlockBase {
       '#default_value' => $this->configuration['max_age'],
       '#maxlength' => 64,
       '#size' => 64,
+      '#required' => TRUE,
       '#weight' => '50',
     ];
 
