@@ -87,7 +87,7 @@ class SentryBlock extends BlockBase {
     $form['disclaimer'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Disclaimer'),
-      '#description' => $this->t('The text displayed to the user on a protected page when the user has JS turned off. (No popup wich challenge is available.)'),
+      '#description' => $this->t('The text displayed to the user on a protected page when the user has JS turned off. (No popup with challenge is available.)'),
       '#default_value' => $this->configuration['disclaimer'],
       '#weight' => '40',
     ];
