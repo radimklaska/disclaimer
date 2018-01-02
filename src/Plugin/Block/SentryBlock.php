@@ -39,11 +39,17 @@ class SentryBlock extends BlockBase {
    */
   public function defaultConfiguration() {
     return [
-      'machine_name' => $this->t('sentry_block' . time()),
-      'challenge' => $this->t(''),
-      'disclaimer' => $this->t(''),
-      'redirect' => $this->t('/'),
-      'max_age' => $this->t('86400'),
+      'machine_name' => 'sentry_block' . time(),
+      'challenge' => [
+        'format' => filter_fallback_format(),
+        'value' => '',
+      ],
+      'disclaimer' => [
+        'format' => filter_fallback_format(),
+        'value' => '',
+      ],
+      'redirect' => '/',
+      'max_age' => 86400,
     ] + parent::defaultConfiguration();
   }
 
@@ -51,19 +57,12 @@ class SentryBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function blockForm($form, FormStateInterface $form_state) {
-    // $current_user = \Drupal::currentUser();
-    //        $filter_formats = filter_formats($current_user);
-    //        $filter_formats_form = [];
-    //        foreach ($filter_formats as $filter_format) {
-    //            $filter_formats_form[$filter_format->id()] = $filter_format->label();
-    //        }
     $form['challenge'] = [
-      // '#type' => 'text_format',
-      //            '#format' => $filter_formats_form,.
-      '#type' => 'textarea',
+      '#type' => 'text_format',
+      '#format' => $this->configuration['challenge']['format'],
       '#title' => $this->t('Challenge'),
       '#description' => $this->t('The question the user must confirm. "Do you agree?" type of question. "Yes" = User stays on requested page. "No" = User is redirected to <em>Redirect</em> url specified below.'),
-      '#default_value' => $this->configuration['challenge'],
+      '#default_value' => $this->configuration['challenge']['value'],
       '#required' => TRUE,
       '#weight' => '20',
     ];
@@ -78,10 +77,11 @@ class SentryBlock extends BlockBase {
       '#weight' => '30',
     ];
     $form['disclaimer'] = [
-      '#type' => 'textarea',
+      '#type' => 'text_format',
+      '#format' => $this->configuration['disclaimer']['format'],
       '#title' => $this->t('Disclaimer'),
       '#description' => $this->t('The text displayed to the user on a protected page when the user has JS turned off. (No popup with challenge is available.)'),
-      '#default_value' => $this->configuration['disclaimer'],
+      '#default_value' => $this->configuration['disclaimer']['value'],
       '#weight' => '40',
       '#required' => FALSE,
     ];
@@ -103,7 +103,8 @@ class SentryBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
-    $this->configuration['machine_name'] = $form_state->getCompleteFormState()->getValue('id');
+    $this->configuration['machine_name'] = $form_state->getCompleteFormState()
+      ->getValue('id');
     $this->configuration['challenge'] = $form_state->getValue('challenge');
     $this->configuration['disclaimer'] = $form_state->getValue('disclaimer');
     $this->configuration['redirect'] = $form_state->getValue('redirect');
@@ -139,11 +140,11 @@ class SentryBlock extends BlockBase {
         ],
       ],
     ];
+
     // Include JS to handle popup and hiding.
     $build['#attached']['library'][] = 'sentry/sentry';
     // Pass settings to JS.
     $build['#attached']['drupalSettings']['sentry']['sentry']['sentry_' . Html::escape($this->configuration['machine_name'])] = [
-      'challenge' => Html::escape($this->configuration['challenge']),
       'redirect' => $this->configuration['redirect'],
       'max_age' => Html::escape($this->configuration['max_age']),
     ];
@@ -156,7 +157,7 @@ class SentryBlock extends BlockBase {
           'sentry__disclaimer',
         ],
       ],
-      '#markup' => Html::escape($this->configuration['disclaimer']),
+      '#markup' => check_markup($this->configuration['disclaimer']['value'], $this->configuration['disclaimer']['format']),
     ];
 
     // Render popup HTML.
@@ -171,7 +172,7 @@ class SentryBlock extends BlockBase {
           Html::escape($this->label()),
         ],
       ],
-      '#markup' => Html::escape($this->configuration['challenge']),
+      '#markup' => check_markup($this->configuration['challenge']['value'], $this->configuration['challenge']['format']),
     ];
 
     return $build;
