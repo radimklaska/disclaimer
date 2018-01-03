@@ -39,7 +39,7 @@ class SentryBlock extends BlockBase {
    */
   public function defaultConfiguration() {
     return [
-      'machine_name' => 'sentry_block' . time(),
+      'machine_name' => 'sentry_block_' . time(),
       'challenge' => [
         'format' => filter_fallback_format(),
         'value' => '',
@@ -64,7 +64,7 @@ class SentryBlock extends BlockBase {
       '#description' => $this->t('The question the user must confirm. "Do you agree?" type of question. "Yes" = User stays on requested page. "No" = User is redirected to <em>Redirect</em> url specified below.'),
       '#default_value' => $this->configuration['challenge']['value'],
       '#required' => TRUE,
-      '#weight' => '20',
+      '#weight' => 20,
     ];
     $form['redirect'] = [
       '#type' => 'textfield',
@@ -74,7 +74,7 @@ class SentryBlock extends BlockBase {
       '#maxlength' => 256,
       '#size' => 64,
       '#required' => TRUE,
-      '#weight' => '30',
+      '#weight' => 30,
     ];
     $form['disclaimer'] = [
       '#type' => 'text_format',
@@ -82,7 +82,7 @@ class SentryBlock extends BlockBase {
       '#title' => $this->t('Disclaimer'),
       '#description' => $this->t('The text displayed to the user on a protected page when the user has JS turned off. (No popup with challenge is available.)'),
       '#default_value' => $this->configuration['disclaimer']['value'],
-      '#weight' => '40',
+      '#weight' => 40,
       '#required' => FALSE,
     ];
     $form['max_age'] = [
@@ -93,22 +93,10 @@ class SentryBlock extends BlockBase {
       '#maxlength' => 64,
       '#size' => 64,
       '#required' => TRUE,
-      '#weight' => '50',
+      '#weight' => 50,
     ];
 
     return $form;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function blockSubmit($form, FormStateInterface $form_state) {
-    $this->configuration['machine_name'] = $form_state->getCompleteFormState()
-      ->getValue('id');
-    $this->configuration['challenge'] = $form_state->getValue('challenge');
-    $this->configuration['disclaimer'] = $form_state->getValue('disclaimer');
-    $this->configuration['redirect'] = $form_state->getValue('redirect');
-    $this->configuration['max_age'] = $form_state->getValue('max_age');
   }
 
   /**
@@ -129,13 +117,28 @@ class SentryBlock extends BlockBase {
   /**
    * {@inheritdoc}
    */
+  public function blockSubmit($form, FormStateInterface $form_state) {
+    /** @var \Drupal\Core\Form\SubformStateInterface $form_state */
+    $this->configuration['machine_name'] = $form_state->getCompleteFormState()
+      ->getValue('id');
+    $this->configuration['challenge'] = $form_state->getValue('challenge');
+    $this->configuration['disclaimer'] = $form_state->getValue('disclaimer');
+    $this->configuration['redirect'] = $form_state->getValue('redirect');
+    $this->configuration['max_age'] = $form_state->getValue('max_age');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function build() {
+    $sentry_id = 'sentry_' . Html::escape($this->configuration['machine_name']);
+
     // Identify block by class with machine name.
     $build = [
       '#type' => 'container',
       '#attributes' => [
         'class' => [
-          'sentry_' . Html::escape($this->configuration['machine_name']),
+          $sentry_id,
           'sentryNoScript',
         ],
       ],
@@ -144,7 +147,7 @@ class SentryBlock extends BlockBase {
     // Include JS to handle popup and hiding.
     $build['#attached']['library'][] = 'sentry/sentry';
     // Pass settings to JS.
-    $build['#attached']['drupalSettings']['sentry']['sentry']['sentry_' . Html::escape($this->configuration['machine_name'])] = [
+    $build['#attached']['drupalSettings']['sentry'][$sentry_id] = [
       'redirect' => $this->configuration['redirect'],
       'max_age' => Html::escape($this->configuration['max_age']),
     ];
