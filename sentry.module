@@ -12,13 +12,9 @@ use Drupal\Core\Routing\RouteMatchInterface;
  */
 function sentry_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
-    // Main module help for the sentry module.
     case 'help.page.sentry':
-      $output = '';
-      $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('Watches over users visiting sections of the site and displays disclamer when section is entered.') . '</p>';
+      $output = '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Watches over users visiting sections of the site and displays disclaimer when section is entered.') . '</p>';
       return $output;
-
-    default:
   }
 }
