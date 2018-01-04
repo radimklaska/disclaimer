@@ -6,6 +6,9 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Path\PathValidatorInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a 'SentryBlock' block.
@@ -15,7 +18,50 @@ use Drupal\Core\Form\FormStateInterface;
  *  admin_label = @Translation("Sentry block"),
  * )
  */
-class SentryBlock extends BlockBase {
+class SentryBlock extends BlockBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * The path validator service.
+   *
+   * @var \Drupal\Core\Path\PathValidatorInterface
+   */
+  protected $pathValidator;
+
+  /**
+   * Overrides Drupal\Core\BlockBase::__construct().
+   *
+   * Creates a SentryBlock instance.
+   *
+   * @param array $configuration
+   *   The plugin configuration, i.e. an array with configuration values keyed
+   *   by configuration option name. The special key 'context' may be used to
+   *   initialize the defined contexts by setting it to an array of context
+   *   values keyed by context names.
+   * @param string $plugin_id
+   *   The plugin_id for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   *   The path alias manager.
+   * @param \Drupal\Core\Path\PathValidatorInterface $path_validator
+   *   The path validator.
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, PathValidatorInterface $path_validator) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->setConfiguration($configuration);
+    $this->pathValidator = $path_validator;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('path.validator')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -103,8 +149,7 @@ class SentryBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function blockValidate($form, FormStateInterface $form_state) {
-    $url_object = \Drupal::service('path.validator')
-      ->getUrlIfValid($form_state->getValue('redirect'));
+    $url_object = $this->pathValidator->getUrlIfValid($form_state->getValue('redirect'));
 
     if (!$url_object) {
       $form_state->setErrorByName('redirect', $this->t('Redirect URL must be valid path.'));
