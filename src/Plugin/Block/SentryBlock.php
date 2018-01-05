@@ -86,6 +86,8 @@ class SentryBlock extends BlockBase implements ContainerFactoryPluginInterface {
   public function defaultConfiguration() {
     return [
       'machine_name' => 'sentry_block_' . time(),
+      'redirect' => '/',
+      'max_age' => 86400,
       'challenge' => [
         'format' => filter_fallback_format(),
         'value' => '',
@@ -94,8 +96,6 @@ class SentryBlock extends BlockBase implements ContainerFactoryPluginInterface {
         'format' => filter_fallback_format(),
         'value' => '',
       ],
-      'redirect' => '/',
-      'max_age' => 86400,
     ] + parent::defaultConfiguration();
   }
 
@@ -103,15 +103,6 @@ class SentryBlock extends BlockBase implements ContainerFactoryPluginInterface {
    * {@inheritdoc}
    */
   public function blockForm($form, FormStateInterface $form_state) {
-    $form['challenge'] = [
-      '#type' => 'text_format',
-      '#format' => $this->configuration['challenge']['format'],
-      '#title' => $this->t('Challenge'),
-      '#description' => $this->t('The question the user must confirm. "Do you agree?" type of question. "Yes" = User stays on requested page. "No" = User is redirected to <em>Redirect</em> url specified below.'),
-      '#default_value' => $this->configuration['challenge']['value'],
-      '#required' => TRUE,
-      '#weight' => 20,
-    ];
     $form['redirect'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Redirect'),
@@ -119,6 +110,25 @@ class SentryBlock extends BlockBase implements ContainerFactoryPluginInterface {
       '#default_value' => $this->configuration['redirect'],
       '#maxlength' => 256,
       '#size' => 64,
+      '#required' => TRUE,
+      '#weight' => 10,
+    ];
+    $form['max_age'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Max-age'),
+      '#description' => $this->t('The time in seconds the user is confirmed. Set to 0 for no expiry. (86400 seconds = 24 hours)'),
+      '#default_value' => $this->configuration['max_age'],
+      '#maxlength' => 64,
+      '#size' => 64,
+      '#required' => TRUE,
+      '#weight' => 20,
+    ];
+    $form['challenge'] = [
+      '#type' => 'text_format',
+      '#format' => $this->configuration['challenge']['format'],
+      '#title' => $this->t('Challenge'),
+      '#description' => $this->t('The question the user must confirm. "Do you agree?" type of question. "Yes" = User stays on requested page. "No" = User is redirected to <em>Redirect</em> url specified below.'),
+      '#default_value' => $this->configuration['challenge']['value'],
       '#required' => TRUE,
       '#weight' => 30,
     ];
@@ -131,16 +141,6 @@ class SentryBlock extends BlockBase implements ContainerFactoryPluginInterface {
       '#weight' => 40,
       '#required' => FALSE,
     ];
-    $form['max_age'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Max-age'),
-      '#description' => $this->t('The time in seconds the user is confirmed. Set to 0 for no expiry. (86400 seconds = 24 hours)'),
-      '#default_value' => $this->configuration['max_age'],
-      '#maxlength' => 64,
-      '#size' => 64,
-      '#required' => TRUE,
-      '#weight' => 50,
-    ];
 
     return $form;
   }
@@ -150,7 +150,6 @@ class SentryBlock extends BlockBase implements ContainerFactoryPluginInterface {
    */
   public function blockValidate($form, FormStateInterface $form_state) {
     $url_object = $this->pathValidator->getUrlIfValid($form_state->getValue('redirect'));
-
     if (!$url_object) {
       $form_state->setErrorByName('redirect', $this->t('Redirect URL must be valid path.'));
     }
@@ -166,10 +165,10 @@ class SentryBlock extends BlockBase implements ContainerFactoryPluginInterface {
     /** @var \Drupal\Core\Form\SubformStateInterface $form_state */
     $this->configuration['machine_name'] = $form_state->getCompleteFormState()
       ->getValue('id');
-    $this->configuration['challenge'] = $form_state->getValue('challenge');
-    $this->configuration['disclaimer'] = $form_state->getValue('disclaimer');
     $this->configuration['redirect'] = $form_state->getValue('redirect');
     $this->configuration['max_age'] = $form_state->getValue('max_age');
+    $this->configuration['challenge'] = $form_state->getValue('challenge');
+    $this->configuration['disclaimer'] = $form_state->getValue('disclaimer');
   }
 
   /**
@@ -225,5 +224,4 @@ class SentryBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
     return $build;
   }
-
 }
