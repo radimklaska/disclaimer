@@ -1,6 +1,6 @@
-sentry:
+disclaimer:
   js:
-    js/sentry.js: {}
+    js/disclaimer.js: {}
   dependencies:
     - core/drupal
     - core/drupalSettings

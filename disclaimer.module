@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains sentry.module.
+ * Contains disclaimer.module.
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
@@ -10,9 +10,9 @@ use Drupal\Core\Routing\RouteMatchInterface;
 /**
  * Implements hook_help().
  */
-function sentry_help($route_name, RouteMatchInterface $route_match) {
+function disclaimer_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
-    case 'help.page.sentry':
+    case 'help.page.disclaimer':
       $output = '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('Watches over users visiting sections of the site and displays disclaimer when section is entered.') . '</p>';
       return $output;

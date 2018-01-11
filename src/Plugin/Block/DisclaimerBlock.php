@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\sentry\Plugin\Block;
+namespace Drupal\disclaimer\Plugin\Block;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Block\BlockBase;
@@ -11,14 +11,14 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Provides a 'SentryBlock' block.
+ * Provides a 'DisclaimerBlock' block.
  *
  * @Block(
- *  id = "sentry_block",
- *  admin_label = @Translation("Sentry block"),
+ *  id = "disclaimer_block",
+ *  admin_label = @Translation("Disclaimer block"),
  * )
  */
-class SentryBlock extends BlockBase implements ContainerFactoryPluginInterface {
+class DisclaimerBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
    * The path validator service.
@@ -30,7 +30,7 @@ class SentryBlock extends BlockBase implements ContainerFactoryPluginInterface {
   /**
    * Overrides Drupal\Core\BlockBase::__construct().
    *
-   * Creates a SentryBlock instance.
+   * Creates a DisclaimerBlock instance.
    *
    * @param array $configuration
    *   The plugin configuration, i.e. an array with configuration values keyed
@@ -68,7 +68,7 @@ class SentryBlock extends BlockBase implements ContainerFactoryPluginInterface {
    */
   public function getCacheContexts() {
     return Cache::mergeContexts(parent::getCacheContexts(), [
-      'cookies:sentry_' . $this->configuration['machine_name'],
+      'cookies:disclaimer_' . $this->configuration['machine_name'],
       'url.path',
     ]);
   }
@@ -85,7 +85,7 @@ class SentryBlock extends BlockBase implements ContainerFactoryPluginInterface {
    */
   public function defaultConfiguration() {
     return [
-      'machine_name' => 'sentry_block_' . time(),
+      'machine_name' => 'disclaimer_block_' . time(),
       'redirect' => '/',
       'max_age' => 86400,
       'challenge' => [
@@ -175,44 +175,44 @@ class SentryBlock extends BlockBase implements ContainerFactoryPluginInterface {
    * {@inheritdoc}
    */
   public function build() {
-    $sentry_id = 'sentry_' . Html::escape($this->configuration['machine_name']);
+    $disclaimer_id = 'disclaimer_' . Html::escape($this->configuration['machine_name']);
 
     // Identify block by class with machine name.
     $build = [
       '#type' => 'container',
       '#attributes' => [
         'class' => [
-          $sentry_id,
-          'sentryNoScript',
+          $disclaimer_id,
+          'disclaimerNoScript',
         ],
       ],
     ];
 
     // Include JS to handle popup and hiding.
-    $build['#attached']['library'][] = 'sentry/sentry';
+    $build['#attached']['library'][] = 'disclaimer/disclaimer';
     // Pass settings to JS.
-    $build['#attached']['drupalSettings']['sentry'][$sentry_id] = [
+    $build['#attached']['drupalSettings']['disclaimer'][$disclaimer_id] = [
       'redirect' => $this->configuration['redirect'],
       'max_age' => Html::escape($this->configuration['max_age']),
     ];
 
     // Render disclaimer.
-    $build['sentry_block_disclaimer'] = [
+    $build['disclaimer_block_disclaimer'] = [
       '#type' => 'container',
       '#attributes' => [
         'class' => [
-          'sentry__disclaimer',
+          'disclaimer__disclaimer',
         ],
       ],
       '#markup' => check_markup($this->configuration['disclaimer']['value'], $this->configuration['disclaimer']['format']),
     ];
 
     // Render popup HTML.
-    $build['sentry_block_challenge'] = [
+    $build['disclaimer_block_challenge'] = [
       '#type' => 'container',
       '#attributes' => [
         'class' => [
-          'sentry__challenge',
+          'disclaimer__challenge',
           'hidden',
         ],
         'title' => [

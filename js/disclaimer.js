@@ -6,19 +6,19 @@
 
   'use strict';
 
-  Drupal.behaviors.sentry = {
+  Drupal.behaviors.disclaimer = {
     attach: function (context, settings) {
 
       // Show/Hide based on Javascript availability.
-      $('.sentryNoScript').hide();
+      $('.disclaimerNoScript').hide();
 
-      // Go trough all sentry block instances on this page.
-      $.each(drupalSettings.sentry, function (index, value) {
+      // Go trough all disclaimer block instances on this page.
+      $.each(drupalSettings.disclaimer, function (index, value) {
 
         // Skip popup in case cookie says user already agreed.
         if ($.cookie(index) !== '1') {
           // User did not agreed yet. Show popup.
-          $('.block.' + index + ' .sentry__challenge', context).dialog({
+          $('.block.' + index + ' .disclaimer__challenge', context).dialog({
             closeOnEscape: false,
             open: function (event, ui) {
               $('.ui-dialog-titlebar-close', ui.dialog | ui).hide();
