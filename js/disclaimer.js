@@ -29,7 +29,7 @@
             modal: true,
             buttons: {
               'Yes': {
-                text: Drupal.t('Yes'),
+                text: value.agree,
                 click: function () {
                   $(this).dialog('close');
                   var expire = new Date(new Date().getTime() + parseInt(value.max_age) * 1000);
@@ -37,7 +37,7 @@
                 }
               },
               'No': {
-                text: Drupal.t('No'),
+                text: value.disagree,
                 click: function () {
                   $(this).dialog('close');
                   window.location.href = value.redirect;

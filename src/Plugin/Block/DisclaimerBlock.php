@@ -92,6 +92,8 @@ class DisclaimerBlock extends BlockBase implements ContainerFactoryPluginInterfa
         'format' => filter_fallback_format(),
         'value' => '',
       ],
+      'agree' => $this->t('Yes'),
+      'disagree' => $this->t('No'),
       'disclaimer' => [
         'format' => filter_fallback_format(),
         'value' => '',
@@ -127,10 +129,30 @@ class DisclaimerBlock extends BlockBase implements ContainerFactoryPluginInterfa
       '#type' => 'text_format',
       '#format' => $this->configuration['challenge']['format'],
       '#title' => $this->t('Challenge'),
-      '#description' => $this->t('The question the user must confirm. "Do you agree?" type of question. "Yes" = User stays on requested page. "No" = User is redirected to <em>Redirect</em> url specified below.'),
+      '#description' => $this->t('The question the user must confirm. "Do you agree?" type of question. <em>Agree</em> = User stays on requested page. <em>Disagree</em> = User is redirected to <em>Redirect</em> url specified below.'),
       '#default_value' => $this->configuration['challenge']['value'],
       '#required' => TRUE,
       '#weight' => 30,
+    ];
+    $form['agree'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Agree button'),
+      '#description' => $this->t('Label for <em>Agree</em> button on challenge.'),
+      '#default_value' => $this->configuration['agree'],
+      '#maxlength' => 64,
+      '#size' => 64,
+      '#required' => TRUE,
+      '#weight' => 40,
+    ];
+    $form['disagree'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Disagree button'),
+      '#description' => $this->t('Label for <em>Disagree</em> button on challenge.'),
+      '#default_value' => $this->configuration['disagree'],
+      '#maxlength' => 64,
+      '#size' => 64,
+      '#required' => TRUE,
+      '#weight' => 50,
     ];
     $form['disclaimer'] = [
       '#type' => 'text_format',
@@ -138,7 +160,7 @@ class DisclaimerBlock extends BlockBase implements ContainerFactoryPluginInterfa
       '#title' => $this->t('Disclaimer'),
       '#description' => $this->t('The text displayed to the user on a protected page when the user has JS turned off. (No popup with challenge is available.)'),
       '#default_value' => $this->configuration['disclaimer']['value'],
-      '#weight' => 40,
+      '#weight' => 60,
       '#required' => FALSE,
     ];
 
@@ -168,6 +190,8 @@ class DisclaimerBlock extends BlockBase implements ContainerFactoryPluginInterfa
     $this->configuration['redirect'] = $form_state->getValue('redirect');
     $this->configuration['max_age'] = $form_state->getValue('max_age');
     $this->configuration['challenge'] = $form_state->getValue('challenge');
+    $this->configuration['agree'] = $form_state->getValue('agree');
+    $this->configuration['disagree'] = $form_state->getValue('disagree');
     $this->configuration['disclaimer'] = $form_state->getValue('disclaimer');
   }
 
@@ -194,6 +218,8 @@ class DisclaimerBlock extends BlockBase implements ContainerFactoryPluginInterfa
     $build['#attached']['drupalSettings']['disclaimer'][$disclaimer_id] = [
       'redirect' => $this->configuration['redirect'],
       'max_age' => Html::escape($this->configuration['max_age']),
+      'agree' => Html::escape($this->configuration['agree']),
+      'disagree' => Html::escape($this->configuration['disagree']),
     ];
 
     // Render disclaimer.
@@ -224,4 +250,5 @@ class DisclaimerBlock extends BlockBase implements ContainerFactoryPluginInterfa
 
     return $build;
   }
+
 }
