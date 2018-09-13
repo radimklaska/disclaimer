@@ -7,3 +7,12 @@ disclaimer:
     - core/jquery
     - core/jquery.cookie
     - core/jquery.ui.dialog
+disclaimer_email:
+  js:
+    js/disclaimer_email.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery
+    - core/jquery.cookie
+    - core/jquery.ui.dialog

@@ -10,7 +10,7 @@
     attach: function (context, settings) {
 
       // Show/Hide based on Javascript availability.
-      $('.disclaimerNoScript').hide();
+      $('.disclaimer__noscript').hide();
 
       // Go trough all disclaimer block instances on this page.
       $.each(drupalSettings.disclaimer, function (index, value) {
